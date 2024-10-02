@@ -11,7 +11,7 @@ const Tooth = React.memo(({ number, onClick, selected, setRef }) => (
   <button
     ref={(el) => setRef(number, el)}
     onClick={() => onClick(number)}
-    className={`w-10 h-14 rounded m-1 flex items-center justify-center text-xs drop-shadow ${selected ? 'bg-blue-500 text-white' : 'bg-yellow-50'
+    className={`min-w-6 w-10 h-14 rounded m-1 flex items-center justify-center text-xs drop-shadow ${selected ? 'bg-blue-500 text-white' : 'bg-yellow-50'
       }`}
   >
     {number}
@@ -148,8 +148,8 @@ const ElasticPlacer = () => {
     <div className="container mx-auto sm:p-4">
       <div className="sm:rounded-3xl sm:px-4 bg-green-700 sm:py-8">
         <h1 className="text-2xl font-bold py-4 text-center text-white drop-shadow">Stiek</h1>
-        <div className="mx-auto mb-4 bg-blue-200 sm:rounded-2xl py-8 sm:px-4 max-w-4xl">
-          <div className="relative">
+        <div className="max-w-screen mx-auto mb-4 bg-blue-200 sm:rounded-2xl py-8 sm:px-4 max-w-4xl overflow-x-auto">
+          <div className="relative min-w-[580px] px-2">
             <svg ref={svgRef} className="absolute inset-0 pointer-events-none z-10 drop-shadow max-w-4xl" style={{ width: '100%', height: '100%' }}></svg>
             {teethLayout.map((row, rowIndex) => (
               <div key={rowIndex} className="flex justify-center flex-1 w-full">
@@ -167,7 +167,7 @@ const ElasticPlacer = () => {
           </div>
         </div>
       </div>
-      <div className="mt-4 mb-4 mx-auto flex flex-row justify-center items-center gap-2">
+      <div className="mt-4 mb-4 mx-auto flex flex-col sm:flex-row justify-center items-center gap-2">
         <button
           onClick={addElastic}
           className={`bg-blue-500 text-white px-4 py-2 rounded mr-2 flex flex-row items-center gap-2 ${currentElastic.length < 2 ? 'opacity-50 cursor-not-allowed' : ''}`}
