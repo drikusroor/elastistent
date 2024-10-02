@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { X, PlusCircle } from 'lucide-react';
+import { X, PlusCircle, Share2 } from 'lucide-react';
+import { QRCodeSVG } from 'qrcode.react';
 
 const teethLayout = [
   [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28],
@@ -10,7 +11,7 @@ const Tooth = React.memo(({ number, onClick, selected, setRef }) => (
   <button
     ref={(el) => setRef(number, el)}
     onClick={() => onClick(number)}
-    className={`w-10 h-14 border border-gray-300 rounded m-1 flex items-center justify-center text-xs ${selected ? 'bg-blue-500 text-white' : 'bg-white'
+    className={`w-10 h-14 rounded m-1 flex items-center justify-center text-xs drop-shadow ${selected ? 'bg-blue-500 text-white' : 'bg-yellow-50'
       }`}
   >
     {number}
@@ -20,6 +21,7 @@ const Tooth = React.memo(({ number, onClick, selected, setRef }) => (
 const ElasticPlacer = () => {
   const [elastics, setElastics] = useState([]);
   const [currentElastic, setCurrentElastic] = useState([]);
+  const [shareUrl, setShareUrl] = useState('');
   const toothRefs = useRef({});
   const svgRef = useRef(null);
   const initialLoadDone = useRef(false);
@@ -40,10 +42,11 @@ const ElasticPlacer = () => {
   }, []);
 
   useEffect(() => {
-    if (initialLoadDone.current && elastics.length > 0) {
-      const elasticsParam = JSON.stringify(elastics);
-      const newUrl = `${window.location.pathname}?elastics=${elasticsParam}`;
+    if (initialLoadDone.current) {
+      const elasticsParam = elastics.length > 0 ? `?elastics=${JSON.stringify(elastics)}` : '';
+      const newUrl = `${window.location.origin}${window.location.pathname}${elasticsParam}`;
       window.history.pushState({ path: newUrl }, '', newUrl);
+      setShareUrl(newUrl);
     }
   }, [elastics]);
 
@@ -76,6 +79,7 @@ const ElasticPlacer = () => {
     setElastics([]);
     setCurrentElastic([]);
     window.history.pushState({ path: window.location.pathname }, '', window.location.pathname);
+    setShareUrl(window.location.origin + window.location.pathname);
   }, []);
 
   const setToothRef = useCallback((number, ref) => {
@@ -113,29 +117,60 @@ const ElasticPlacer = () => {
     });
   }, [elastics]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      drawElastics();
+    };
+  
+    window.addEventListener('resize', handleResize);
+  
+    return () => {
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [drawElastics]);
+
+  const handleShare = useCallback(() => {
+    if (navigator.share) {
+      navigator.share({
+        title: 'Mijn Stiek configuratie',
+        url: shareUrl
+      }).catch((error) => console.log('Error sharing', error));
+    } else {
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        alert('Link gekopieerd naar klembord!');
+      }, (err) => {
+        console.error('Kon de link niet kopiëren: ', err);
+      });
+    }
+  }, [shareUrl]);
+
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Stiek</h1>
-      <div className="mb-4 relative">
-        <svg ref={svgRef} className="absolute inset-0 pointer-events-none" style={{ width: '100%', height: '100%' }}></svg>
-        {teethLayout.map((row, rowIndex) => (
-          <div key={rowIndex} className="flex justify-center">
-            {row.map((tooth) => (
-              <Tooth
-                key={tooth}
-                number={tooth}
-                onClick={handleToothClick}
-                selected={currentElastic.includes(tooth)}
-                setRef={setToothRef}
-              />
+    <div className="container mx-auto sm:p-4">
+      <div className="sm:rounded-3xl sm:px-4 bg-green-700 sm:py-8">
+        <h1 className="text-2xl font-bold py-4 text-center text-white drop-shadow">Stiek</h1>
+        <div className="mx-auto mb-4 bg-blue-200 sm:rounded-2xl py-8 sm:px-4 max-w-4xl">
+          <div className="relative">
+            <svg ref={svgRef} className="absolute inset-0 pointer-events-none z-10 drop-shadow max-w-4xl" style={{ width: '100%', height: '100%' }}></svg>
+            {teethLayout.map((row, rowIndex) => (
+              <div key={rowIndex} className="flex justify-center flex-1 w-full">
+                {row.map((tooth) => (
+                  <Tooth
+                    key={tooth}
+                    number={tooth}
+                    onClick={handleToothClick}
+                    selected={currentElastic.includes(tooth)}
+                    setRef={setToothRef}
+                  />
+                ))}
+              </div>
             ))}
           </div>
-        ))}
+        </div>
       </div>
-      <div className="mb-4 flex flex-row items-center gap-2">
+      <div className="mt-4 mb-4 mx-auto flex flex-row justify-center items-center gap-2">
         <button
           onClick={addElastic}
-          className={`bg-blue-500 text-white px-4 py-2 rounded mr-2 flex flex-row items-center gap-2 ${currentElastic.length < 2 ? 'opacity-50 cursor-not-allowed' : '' }`}
+          className={`bg-blue-500 text-white px-4 py-2 rounded mr-2 flex flex-row items-center gap-2 ${currentElastic.length < 2 ? 'opacity-50 cursor-not-allowed' : ''}`}
           disabled={currentElastic.length < 2}
         >
           <PlusCircle size={16} />
@@ -148,6 +183,17 @@ const ElasticPlacer = () => {
           <X size={16} />
           Begin opnieuw
         </button>
+        <button
+          onClick={handleShare}
+          className="bg-green-500 text-white px-4 py-2 rounded flex flex-row items-center gap-2"
+        >
+          <Share2 size={16} />
+          Delen
+        </button>
+      </div>
+      <div className="mb-4">
+        <h2 className="text-xl font-semibold mb-2">QR Code</h2>
+        <QRCodeSVG value={shareUrl} size={128} />
       </div>
       <div>
         <h2 className="text-xl font-semibold mb-2">Geplaatste elastiekjes:</h2>
@@ -157,6 +203,7 @@ const ElasticPlacer = () => {
               Elastiekje {index + 1}: {elastic.join(' → ')}
             </span>
             <button
+              title="Verwijder elastiekje"
               onClick={() => removeElastic(index)}
               className="bg-red-500 text-white p-1 rounded"
             >
