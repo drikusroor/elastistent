@@ -1,35 +1,172 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { X, PlusCircle } from 'lucide-react';
 
-function App() {
-  const [count, setCount] = useState(0)
+const teethLayout = [
+  [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28],
+  [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38]
+];
+
+const Tooth = React.memo(({ number, onClick, selected, setRef }) => (
+  <button
+    ref={(el) => setRef(number, el)}
+    onClick={() => onClick(number)}
+    className={`w-10 h-14 border border-gray-300 rounded m-1 flex items-center justify-center text-xs ${selected ? 'bg-blue-500 text-white' : 'bg-white'
+      }`}
+  >
+    {number}
+  </button>
+));
+
+const ElasticPlacer = () => {
+  const [elastics, setElastics] = useState([]);
+  const [currentElastic, setCurrentElastic] = useState([]);
+  const toothRefs = useRef({});
+  const svgRef = useRef(null);
+  const initialLoadDone = useRef(false);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const savedElastics = params.get('elastics');
+
+    if (savedElastics) {
+      try {
+        const parsedElastics = JSON.parse(savedElastics);
+        setElastics(parsedElastics);
+      } catch (error) {
+        console.error("Error parsing elastics from URL:", error);
+      }
+    }
+    initialLoadDone.current = true;
+  }, []);
+
+  useEffect(() => {
+    if (initialLoadDone.current && elastics.length > 0) {
+      const elasticsParam = JSON.stringify(elastics);
+      const newUrl = `${window.location.pathname}?elastics=${elasticsParam}`;
+      window.history.pushState({ path: newUrl }, '', newUrl);
+    }
+  }, [elastics]);
+
+  useEffect(() => {
+    if (initialLoadDone.current) {
+      drawElastics();
+    }
+  }, [elastics, initialLoadDone.current]);
+
+  const handleToothClick = useCallback((number) => {
+    setCurrentElastic(prev =>
+      prev.includes(number)
+        ? prev.filter(n => n !== number)
+        : [...prev, number]
+    );
+  }, []);
+
+  const addElastic = useCallback(() => {
+    if (currentElastic.length > 1) {
+      setElastics(prev => [...prev, currentElastic]);
+      setCurrentElastic([]);
+    }
+  }, [currentElastic]);
+
+  const removeElastic = useCallback((index) => {
+    setElastics(prev => prev.filter((_, i) => i !== index));
+  }, []);
+
+  const resetAll = useCallback(() => {
+    setElastics([]);
+    setCurrentElastic([]);
+    window.history.pushState({ path: window.location.pathname }, '', window.location.pathname);
+  }, []);
+
+  const setToothRef = useCallback((number, ref) => {
+    toothRefs.current[number] = ref;
+  }, []);
+
+  const drawElastics = useCallback(() => {
+    if (!svgRef.current) return;
+
+    // Clear previous lines
+    while (svgRef.current.firstChild) {
+      svgRef.current.removeChild(svgRef.current.firstChild);
+    }
+
+    // Draw new lines for each elastic
+    elastics.forEach((elastic, index) => {
+      const points = elastic.map(toothNumber => {
+        const rect = toothRefs.current[toothNumber]?.getBoundingClientRect();
+        const svgRect = svgRef.current.getBoundingClientRect();
+        return rect ? {
+          x: rect.left - svgRect.left + rect.width / 2,
+          y: rect.top - svgRect.top + rect.height / 2
+        } : null;
+      }).filter(point => point !== null);
+
+      if (points.length > 1) {
+        const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        const d = points.map((point, i) => `${i === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
+        path.setAttribute('d', `${d} Z`);
+        path.setAttribute('fill', 'none');
+        path.setAttribute('stroke', `hsl(${index * 137.5 % 360}, 70%, 50%)`);
+        path.setAttribute('stroke-width', '2');
+        svgRef.current.appendChild(path);
+      }
+    });
+  }, [elastics]);
 
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="container mx-auto p-4">
+      <h1 className="text-2xl font-bold mb-4">Stiek</h1>
+      <div className="mb-4 relative">
+        <svg ref={svgRef} className="absolute inset-0 pointer-events-none" style={{ width: '100%', height: '100%' }}></svg>
+        {teethLayout.map((row, rowIndex) => (
+          <div key={rowIndex} className="flex justify-center">
+            {row.map((tooth) => (
+              <Tooth
+                key={tooth}
+                number={tooth}
+                onClick={handleToothClick}
+                selected={currentElastic.includes(tooth)}
+                setRef={setToothRef}
+              />
+            ))}
+          </div>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+      <div className="mb-4 flex flex-row items-center gap-2">
+        <button
+          onClick={addElastic}
+          className={`bg-blue-500 text-white px-4 py-2 rounded mr-2 flex flex-row items-center gap-2 ${currentElastic.length < 2 ? 'opacity-50 cursor-not-allowed' : '' }`}
+          disabled={currentElastic.length < 2}
+        >
+          <PlusCircle size={16} />
+          Elastiekje toevoegen
         </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+        <button
+          onClick={resetAll}
+          className="bg-red-500 text-white px-4 py-2 rounded flex flex-row items-center gap-2"
+        >
+          <X size={16} />
+          Begin opnieuw
+        </button>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+      <div>
+        <h2 className="text-xl font-semibold mb-2">Geplaatste elastiekjes:</h2>
+        {elastics.map((elastic, index) => (
+          <div key={index} className="flex items-center mb-2">
+            <span className="mr-2">
+              Elastiekje {index + 1}: {elastic.join(' → ')}
+            </span>
+            <button
+              onClick={() => removeElastic(index)}
+              className="bg-red-500 text-white p-1 rounded"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
-export default App
+export default ElasticPlacer;
