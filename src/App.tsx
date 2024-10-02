@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import { X, PlusCircle, Share2 } from 'lucide-react';
+import { X, PlusCircle, Share2, Redo2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
 const teethLayout = [
@@ -7,12 +7,51 @@ const teethLayout = [
   [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38]
 ];
 
+// Molars should be slightly wider than premolars
+// Canines should be slightly pointier
+// Incisors should be slightly smaller
+const teethModifications = {
+  18: { className: 'scale-x-110 -translate-y-6', },
+  17: { className: 'scale-x-110 -translate-y-4', },
+  16: { className: 'scale-x-110 -translate-y-3', },
+  15: { className: 'scale-x-110 -translate-y-2', },
+  14: { className: 'scale-x-110 -translate-y-1', },
+  13: { className: '', },
+  12: { className: 'zscale-y-105', },
+  11: { className: 'zscale-y-110', },
+  21: { className: 'zscale-y-110', },
+  22: { className: 'zscale-y-105', },
+  23: { className: '', },
+  24: { className: 'scale-x-110 -translate-y-1', },
+  25: { className: 'scale-x-110 -translate-y-2', },
+  26: { className: 'scale-x-110 -translate-y-3', },
+  27: { className: 'scale-x-110 -translate-y-4', },
+  28: { className: 'scale-x-110 -translate-y-6', },
+
+  48: { className: 'scale-x-110 -translate-y-6', },
+  47: { className: 'scale-x-110 -translate-y-4', },
+  46: { className: 'scale-x-110 -translate-y-3', },
+  45: { className: 'scale-x-110 -translate-y-2', },
+  44: { className: 'scale-x-110 -translate-y-1', },
+  43: { className: '', },
+  42: { className: 'zscale-y-105', },
+  41: { className: 'zscale-y-110', },
+  31: { className: 'zscale-y-110', },
+  32: { className: 'zscale-y-105', },
+  33: { className: '', },
+  34: { className: 'scale-x-110 -translate-y-1', },
+  35: { className: 'scale-x-110 -translate-y-2', },
+  36: { className: 'scale-x-110 -translate-y-3', },
+  37: { className: 'scale-x-110 -translate-y-4', },
+  38: { className: 'scale-x-110 -translate-y-6', },
+}
+
 const Tooth = React.memo(({ number, onClick, selected, setRef }) => (
   <button
     ref={(el) => setRef(number, el)}
     onClick={() => onClick(number)}
     className={`min-w-6 w-10 h-14 rounded m-1 flex items-center justify-center text-xs drop-shadow ${selected ? 'bg-blue-500 text-white' : 'bg-yellow-50'
-      }`}
+      } ${teethModifications[number]?.className || ''}`}
   >
     {number}
   </button>
@@ -121,9 +160,9 @@ const ElasticPlacer = () => {
     const handleResize = () => {
       drawElastics();
     };
-  
+
     window.addEventListener('resize', handleResize);
-  
+
     return () => {
       window.removeEventListener('resize', handleResize);
     };
@@ -132,7 +171,7 @@ const ElasticPlacer = () => {
   const handleShare = useCallback(() => {
     if (navigator.share) {
       navigator.share({
-        title: 'Mijn Stiek configuratie',
+        title: 'Mijn Elastistent configuratie',
         url: shareUrl
       }).catch((error) => console.log('Error sharing', error));
     } else {
@@ -145,11 +184,11 @@ const ElasticPlacer = () => {
   }, [shareUrl]);
 
   return (
-    <div className="container mx-auto sm:p-4">
-      <div className="sm:rounded-3xl sm:px-4 bg-green-700 sm:py-8">
-        <h1 className="text-2xl font-bold py-4 text-center text-white drop-shadow">Stiek</h1>
-        <div className="max-w-screen mx-auto mb-4 bg-blue-200 sm:rounded-2xl py-8 sm:px-4 max-w-4xl overflow-x-auto">
-          <div className="relative min-w-[580px] px-2">
+    <div className="container mx-auto sm:p-4 md:p-8">
+      <div className="sm:rounded-xl pt-4 sm:p-4 md:p-8 bg-jort drop-shadow-xl">
+        <h1 className="text-2xl font-bold mb-4 text-center text-white uppercase">Elastistent</h1>
+        <div className="max-w-screen mx-auto bg-blue-200 sm:rounded-2xl py-8 sm:px-4 max-w-4xl overflow-x-auto">
+          <div className="relative min-w-[580px] px-2 translate-y-3">
             <svg ref={svgRef} className="absolute inset-0 pointer-events-none z-10 drop-shadow max-w-4xl" style={{ width: '100%', height: '100%' }}></svg>
             {teethLayout.map((row, rowIndex) => (
               <div key={rowIndex} className="flex justify-center flex-1 w-full">
@@ -167,51 +206,53 @@ const ElasticPlacer = () => {
           </div>
         </div>
       </div>
-      <div className="mt-4 mb-4 mx-auto flex flex-col sm:flex-row justify-center items-center gap-2">
-        <button
-          onClick={addElastic}
-          className={`bg-blue-500 text-white px-4 py-2 rounded mr-2 flex flex-row items-center gap-2 ${currentElastic.length < 2 ? 'opacity-50 cursor-not-allowed' : ''}`}
-          disabled={currentElastic.length < 2}
-        >
-          <PlusCircle size={16} />
-          Elastiekje toevoegen
-        </button>
-        <button
-          onClick={resetAll}
-          className="bg-red-500 text-white px-4 py-2 rounded flex flex-row items-center gap-2"
-        >
-          <X size={16} />
-          Begin opnieuw
-        </button>
-        <button
-          onClick={handleShare}
-          className="bg-green-500 text-white px-4 py-2 rounded flex flex-row items-center gap-2"
-        >
-          <Share2 size={16} />
-          Delen
-        </button>
+      <div className="mx-auto mt-4 flex flex-col sm:flex-row justify-center items-center sm:items-start gap-4">
+        <div className="flex flex-col gap-4">
+          <button
+            onClick={addElastic}
+            className={`w-full bg-blue-500 text-white px-4 py-2 rounded flex flex-row items-center gap-2 ${currentElastic.length < 2 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            disabled={currentElastic.length < 2}
+          >
+            <PlusCircle size={16} />
+            Elastiekje toevoegen
+          </button>
+          <button
+            onClick={resetAll}
+            className="w-full bg-red-500 text-white px-4 py-2 rounded flex flex-row items-center gap-2"
+          >
+            <Redo2 size={16} />
+            Begin opnieuw
+          </button>
+          <button
+            onClick={handleShare}
+            className="w-full bg-green-500 text-white px-4 py-2 rounded flex flex-row items-center gap-2"
+          >
+            <Share2 size={16} />
+            Delen
+          </button>
+        </div>
+        <div>
+          <QRCodeSVG value={shareUrl} size={196} />
+        </div>
+        <div>
+          <h2 className="text-xl font-semibold">Elastiekjes:</h2>
+          {elastics.map((elastic, index) => (
+            <div key={index} className="flex items-center justify-between my-2 w-full">
+              <span className="mr-2">
+                Elastiekje {index + 1}: {elastic.join(' → ')}
+              </span>
+              <button
+                title="Verwijder elastiekje"
+                onClick={() => removeElastic(index)}
+                className="bg-red-500 text-white p-1 rounded"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          ))}
+        </div>
       </div>
-      <div className="mb-4">
-        <h2 className="text-xl font-semibold mb-2">QR Code</h2>
-        <QRCodeSVG value={shareUrl} size={128} />
-      </div>
-      <div>
-        <h2 className="text-xl font-semibold mb-2">Geplaatste elastiekjes:</h2>
-        {elastics.map((elastic, index) => (
-          <div key={index} className="flex items-center mb-2">
-            <span className="mr-2">
-              Elastiekje {index + 1}: {elastic.join(' → ')}
-            </span>
-            <button
-              title="Verwijder elastiekje"
-              onClick={() => removeElastic(index)}
-              className="bg-red-500 text-white p-1 rounded"
-            >
-              <X size={16} />
-            </button>
-          </div>
-        ))}
-      </div>
+
     </div>
   );
 };
