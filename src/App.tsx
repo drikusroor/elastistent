@@ -7,10 +7,16 @@ const teethLayout = [
   [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38]
 ];
 
+type TeethMofidication = {
+  [key: number]: {
+    className?: string;
+  };
+}
+
 // Molars should be slightly wider than premolars
 // Canines should be slightly pointier
 // Incisors should be slightly smaller
-const teethModifications = {
+const teethModifications: TeethMofidication = {
   18: { className: 'scale-x-110 -translate-y-6', },
   17: { className: 'scale-x-110 -translate-y-4', },
   16: { className: 'scale-x-110 -translate-y-3', },
@@ -46,9 +52,16 @@ const teethModifications = {
   38: { className: 'scale-x-110 -translate-y-6', },
 }
 
-const Tooth = React.memo(({ number, onClick, selected, setRef }) => (
+type ToothMemo = {
+  number: number;
+  onClick: (number: number) => void;
+  selected: boolean;
+  setRef: (number: number, ref: HTMLButtonElement) => void;
+}
+
+const Tooth = React.memo(({ number, onClick, selected, setRef }: ToothMemo) => (
   <button
-    ref={(el) => setRef(number, el)}
+    ref={(el: HTMLButtonElement) => setRef(number, el)}
     onClick={() => onClick(number)}
     className={`min-w-6 w-10 h-14 rounded m-1 flex items-center justify-center text-xs drop-shadow ${selected ? 'bg-blue-500 text-white' : 'bg-yellow-50'
       } ${teethModifications[number]?.className || ''}`}
@@ -57,12 +70,18 @@ const Tooth = React.memo(({ number, onClick, selected, setRef }) => (
   </button>
 ));
 
+type Elastic = number[];
+
+type ToothRef = {
+  [key: number]: HTMLButtonElement;
+}
+
 const ElasticPlacer = () => {
-  const [elastics, setElastics] = useState([]);
-  const [currentElastic, setCurrentElastic] = useState([]);
+  const [elastics, setElastics] = useState<Elastic[]>([]);
+  const [currentElastic, setCurrentElastic] = useState<Elastic>([]);
   const [shareUrl, setShareUrl] = useState('');
-  const toothRefs = useRef({});
-  const svgRef = useRef(null);
+  const toothRefs = useRef<ToothRef>({});
+  const svgRef = useRef<SVGSVGElement>(null);
   const initialLoadDone = useRef(false);
 
   useEffect(() => {
@@ -95,7 +114,7 @@ const ElasticPlacer = () => {
     }
   }, [elastics, initialLoadDone.current]);
 
-  const handleToothClick = useCallback((number) => {
+  const handleToothClick = useCallback((number: number) => {
     setCurrentElastic(prev =>
       prev.includes(number)
         ? prev.filter(n => n !== number)
@@ -110,7 +129,7 @@ const ElasticPlacer = () => {
     }
   }, [currentElastic]);
 
-  const removeElastic = useCallback((index) => {
+  const removeElastic = useCallback((index: number) => {
     setElastics(prev => prev.filter((_, i) => i !== index));
   }, []);
 
@@ -121,7 +140,7 @@ const ElasticPlacer = () => {
     setShareUrl(window.location.origin + window.location.pathname);
   }, []);
 
-  const setToothRef = useCallback((number, ref) => {
+  const setToothRef = useCallback((number: number, ref: HTMLButtonElement) => {
     toothRefs.current[number] = ref;
   }, []);
 
@@ -135,9 +154,12 @@ const ElasticPlacer = () => {
 
     // Draw new lines for each elastic
     elastics.forEach((elastic, index) => {
+
+      if (!svgRef.current) return;
+
       const points = elastic.map(toothNumber => {
         const rect = toothRefs.current[toothNumber]?.getBoundingClientRect();
-        const svgRect = svgRef.current.getBoundingClientRect();
+        const svgRect = svgRef.current!.getBoundingClientRect();
         return rect ? {
           x: rect.left - svgRect.left + rect.width / 2,
           y: rect.top - svgRect.top + rect.height / 2
