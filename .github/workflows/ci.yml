@@ -35,10 +35,6 @@ jobs:
         uses: oven-sh/setup-bun@v2
       - run: bun install
       - run: bun run build
-        with:
-          # Set vite base path to elastistent
-          env:
-            VITE_BASE_PATH: "/elastistent/"
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
