@@ -206,12 +206,13 @@ const ElasticPlacer = () => {
           </div>
         </div>
       </div>
-      <div className="mx-auto mt-4 flex flex-col sm:flex-row justify-center items-center sm:items-start gap-4">
-        <div className="flex flex-col gap-4">
+      <div className="mx-auto mt-4 flex flex-col sm:flex-row justify-center md:justify-between items-center sm:items-start gap-4 md:min-w-72 md:p-8">
+        <div className="flex flex-col gap-4 min-w-56">
           <button
             onClick={addElastic}
-            className={`w-full bg-blue-500 text-white px-4 py-2 rounded flex flex-row items-center gap-2 ${currentElastic.length < 2 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            className={`w-full bg-jort text-white px-4 py-2 rounded flex flex-row items-center gap-2 ${currentElastic.length < 2 ? 'opacity-30 cursor-not-allowed' : ''}`}
             disabled={currentElastic.length < 2}
+            title={currentElastic.length < 2 ? 'Selecteer minimaal 2 tanden' : 'Voeg elastiekje toe'}
           >
             <PlusCircle size={16} />
             Elastiekje toevoegen
@@ -231,11 +232,16 @@ const ElasticPlacer = () => {
             Delen
           </button>
         </div>
-        <div>
+        <div className='mx-auto'>
           <QRCodeSVG value={shareUrl} size={196} />
         </div>
         <div>
           <h2 className="text-xl font-semibold">Elastiekjes:</h2>
+
+          {elastics.length === 0 && (
+            <p className="text-gray-500 text-sm">Geen elastiekjes geconfigureerd</p>
+          )}
+
           {elastics.map((elastic, index) => (
             <div key={index} className="flex items-center justify-between my-2 w-full">
               <span className="mr-2">
@@ -252,6 +258,11 @@ const ElasticPlacer = () => {
           ))}
         </div>
       </div>
+
+      <small className="block text-center mt-8 text-gray-500">
+        {/* copyright by Drikus Roor, Koko Koding with current year */}
+        &copy; {new Date().getFullYear} Drikus Roor, <a href="https://kokokoding.nl" target="_blank" rel="noopener noreferrer" className="text-jort hover:underline">Koko Koding</a>
+      </small>
 
     </div>
   );
