@@ -261,7 +261,7 @@ const ElasticPlacer = () => {
 
       <small className="block text-center mt-8 text-gray-500">
         {/* copyright by Drikus Roor, Koko Koding with current year */}
-        &copy; {new Date().getFullYear} Drikus Roor, <a href="https://kokokoding.nl" target="_blank" rel="noopener noreferrer" className="text-jort hover:underline">Koko Koding</a>
+        &copy; {new Date().getFullYear().toString()} Drikus Roor, <a href="https://kokokoding.nl" target="_blank" rel="noopener noreferrer" className="text-jort hover:underline">Koko Koding</a>
       </small>
 
     </div>
