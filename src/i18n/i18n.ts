@@ -2,6 +2,12 @@ import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+// Get language from URL if present
+const getInitialLanguage = () => {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('lng') || navigator.language.split('-')[0];
+};
+
 const resources = {
   en: {
     translation: {
@@ -98,7 +104,12 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
+    lng: getInitialLanguage(), // Set initial language
     fallbackLng: 'en',
+    detection: {
+      order: ['querystring', 'navigator'],
+      lookupQuerystring: 'lng',
+    },
     interpolation: {
       escapeValue: false,
     },

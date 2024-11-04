@@ -5,6 +5,7 @@ import ViewToggle from './components/ViewToggle';
 import { useTranslation } from 'react-i18next';
 import Tooth from './components/Tooth';
 import { FEATURES } from './config';
+import LanguageButtons from './components/LanguageButtons';
 
 
 const teethLayout = [
@@ -331,7 +332,8 @@ const ElasticPlacer = () => {
         {t('footer.copyright', { year: new Date().getFullYear() })}&nbsp;
         <a href="https://kokokoding.nl" target="_blank" rel="noopener noreferrer" className="text-jort hover:underline">Koko Koding</a>
       </small>
-
+      
+      <LanguageButtons />
     </div>
   );
 };
