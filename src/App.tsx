@@ -3,110 +3,14 @@ import { X, PlusCircle, Share2, Redo2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import ViewToggle from './components/ViewToggle';
 import { useTranslation } from 'react-i18next';
+import Tooth from './components/Tooth';
+import { FEATURES } from './config';
 
-// Feature flags
-const FEATURES = {
-  DISABLE_TEETH: true,
-  HIGHLIGHT_SPECIAL_TEETH: true,
-  MIRROR_VIEW: true,
-} as const;
 
 const teethLayout = [
   [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28],
   [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38]
 ];
-
-const middleIncisors = [11, 21, 31, 41];
-const canines = [13, 23, 33, 43];
-
-type TeethMofidication = {
-  [key: number]: {
-    className?: string;
-  };
-}
-
-// Molars should be slightly wider than premolars
-// Canines should be slightly pointier
-// Incisors should be slightly smaller
-const teethModifications: TeethMofidication = {
-  18: { className: 'scale-x-110 -translate-y-6', },
-  17: { className: 'scale-x-110 -translate-y-4', },
-  16: { className: 'scale-x-110 -translate-y-3', },
-  15: { className: 'scale-x-110 -translate-y-2', },
-  14: { className: 'scale-x-110 -translate-y-1', },
-  13: { className: '', },
-  12: { className: 'zscale-y-105', },
-  11: { className: 'zscale-y-110', },
-  21: { className: 'zscale-y-110', },
-  22: { className: 'zscale-y-105', },
-  23: { className: '', },
-  24: { className: 'scale-x-110 -translate-y-1', },
-  25: { className: 'scale-x-110 -translate-y-2', },
-  26: { className: 'scale-x-110 -translate-y-3', },
-  27: { className: 'scale-x-110 -translate-y-4', },
-  28: { className: 'scale-x-110 -translate-y-6', },
-
-  48: { className: 'scale-x-110 -translate-y-6', },
-  47: { className: 'scale-x-110 -translate-y-4', },
-  46: { className: 'scale-x-110 -translate-y-3', },
-  45: { className: 'scale-x-110 -translate-y-2', },
-  44: { className: 'scale-x-110 -translate-y-1', },
-  43: { className: '', },
-  42: { className: 'zscale-y-105', },
-  41: { className: 'zscale-y-110', },
-  31: { className: 'zscale-y-110', },
-  32: { className: 'zscale-y-105', },
-  33: { className: '', },
-  34: { className: 'scale-x-110 -translate-y-1', },
-  35: { className: 'scale-x-110 -translate-y-2', },
-  36: { className: 'scale-x-110 -translate-y-3', },
-  37: { className: 'scale-x-110 -translate-y-4', },
-  38: { className: 'scale-x-110 -translate-y-6', },
-}
-
-type ToothMemo = {
-  number: number;
-  onClick: (number: number) => void;
-  onToggle: (number: number) => void;
-  selected: boolean;
-  disabled: boolean;
-  setRef: (number: number, ref: HTMLButtonElement) => void;
-}
-
-const getToothColor = (number: number, selected: boolean, disabled: boolean) => {
-  if (disabled && FEATURES.DISABLE_TEETH) return 'bg-gray-300';
-  if (selected) return 'bg-blue-500 text-white';
-  if (FEATURES.HIGHLIGHT_SPECIAL_TEETH) {
-    if (middleIncisors.includes(number)) return 'bg-green-200';
-    if (canines.includes(number)) return 'bg-purple-200';
-  }
-  return 'bg-yellow-50';
-};
-
-const Tooth = React.memo(({ number, onClick, onToggle, selected, disabled, setRef, isMirrorView }: ToothMemo & { isMirrorView: boolean }) => {
-  const handleClick = (e: React.MouseEvent) => {
-    if (e.ctrlKey || e.metaKey) {
-      onToggle(number);
-    } else {
-      onClick(number);
-    }
-  };
-
-  return (
-    <button
-      ref={(el: HTMLButtonElement) => setRef(number, el)}
-      onClick={handleClick}
-      className={`min-w-6 w-10 h-14 rounded m-1 flex items-center justify-center text-xs drop-shadow 
-        ${getToothColor(number, selected, disabled)}
-        ${teethModifications[number]?.className || ''}
-        `}
-    >
-      <span className={isMirrorView ? 'transform scale-x-[-1]' : ''}>
-        {number}
-      </span>
-    </button>
-  );
-});
 
 type Elastic = number[];
 
@@ -186,6 +90,9 @@ const ElasticPlacer = () => {
   }, [elastics, initialLoadDone]);
 
   const handleToothClick = useCallback((number: number) => {
+
+    console.log('handleToothClick', number);
+
     if (!FEATURES.DISABLE_TEETH || !disabledTeeth.includes(number)) {
       setCurrentElastic(prev =>
         prev.includes(number)
