@@ -132,6 +132,7 @@ const ElasticPlacer = () => {
     const params = new URLSearchParams(window.location.search);
     const savedElastics = params.get('elastics');
     const savedDisabledTeeth = params.get('disabled');
+    const savedMirrorView = params.get('mirror');
 
     if (savedElastics) {
       try {
@@ -151,6 +152,10 @@ const ElasticPlacer = () => {
       }
     }
 
+    if (FEATURES.MIRROR_VIEW && savedMirrorView) {
+      setIsMirrorView(savedMirrorView === 'true');
+    }
+
     initialLoadDone.current = true;
   }, []);
 
@@ -164,11 +169,14 @@ const ElasticPlacer = () => {
       if (FEATURES.DISABLE_TEETH && disabledTeeth.length > 0) {
         params.set('disabled', JSON.stringify(disabledTeeth));
       }
+      if (FEATURES.MIRROR_VIEW && isMirrorView) {
+        params.set('mirror', 'true');
+      }
       const newUrl = `${window.location.origin}${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
       window.history.pushState({ path: newUrl }, '', newUrl);
       setShareUrl(newUrl);
     }
-  }, [elastics, disabledTeeth]);
+  }, [elastics, disabledTeeth, isMirrorView]);
 
   useEffect(() => {
     if (initialLoadDone.current) {
@@ -218,6 +226,8 @@ const ElasticPlacer = () => {
   const resetAll = useCallback(() => {
     setElastics([]);
     setCurrentElastic([]);
+    setDisabledTeeth([]);
+    setIsMirrorView(false);
     window.history.pushState({ path: window.location.pathname }, '', window.location.pathname);
     setShareUrl(window.location.origin + window.location.pathname);
   }, []);
