@@ -92,8 +92,6 @@ const Tooth = React.memo(({ number, onClick, onToggle, selected, disabled, setRe
     }
   };
 
-  const isDisabled = disabled && FEATURES.DISABLE_TEETH;
-
   return (
     <button
       ref={(el: HTMLButtonElement) => setRef(number, el)}
@@ -101,7 +99,7 @@ const Tooth = React.memo(({ number, onClick, onToggle, selected, disabled, setRe
       className={`min-w-6 w-10 h-14 rounded m-1 flex items-center justify-center text-xs drop-shadow 
         ${getToothColor(number, selected, disabled)}
         ${teethModifications[number]?.className || ''}
-        ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+        `}
     >
       <span className={isMirrorView ? 'transform scale-x-[-1]' : ''}>
         {number}
