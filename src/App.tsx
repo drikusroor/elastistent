@@ -90,9 +90,6 @@ const ElasticPlacer = () => {
   }, [elastics, initialLoadDone]);
 
   const handleToothClick = useCallback((number: number) => {
-
-    console.log('handleToothClick', number);
-
     if (!FEATURES.DISABLE_TEETH || !disabledTeeth.includes(number)) {
       setCurrentElastic(prev =>
         prev.includes(number)
