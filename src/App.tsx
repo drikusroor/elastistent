@@ -258,6 +258,7 @@ const ElasticPlacer = () => {
                   <Tooth
                     key={tooth}
                     number={tooth}
+                    row={rowIndex}
                     onClick={handleToothClick}
                     onToggle={handleToothToggle}
                     selected={currentElastic.includes(tooth)}

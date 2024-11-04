@@ -1,5 +1,6 @@
 import React from "react";
 import { FEATURES } from "../config";
+import ToothIcon, { TOOTH_TYPE_MAP } from "./ToothIcon";
 
 const middleIncisors = [11, 21, 31, 41];
 const canines = [13, 23, 33, 43];
@@ -51,6 +52,7 @@ const teethModifications: TeethMofidication = {
 
 type ToothMemo = {
   number: number;
+  row: number;
   onClick: (number: number) => void;
   onToggle: (number: number) => void;
   selected: boolean;
@@ -70,7 +72,7 @@ const getToothColor = (number: number, selected: boolean, disabled: boolean) => 
 
 
 
-const Tooth = React.memo(({ number, onClick, onToggle, selected, disabled, setRef, isMirrorView }: ToothMemo & { isMirrorView: boolean }) => {
+const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, setRef, isMirrorView }: ToothMemo & { isMirrorView: boolean }) => {
   const handleClick = (e: React.MouseEvent) => {
     if (e.ctrlKey || e.metaKey) {
       onToggle(number);
@@ -79,19 +81,29 @@ const Tooth = React.memo(({ number, onClick, onToggle, selected, disabled, setRe
     }
   };
 
+  const toothType = TOOTH_TYPE_MAP[number];
+
   return (
     <button
       ref={(el: HTMLButtonElement) => setRef(number, el)}
       onClick={handleClick}
-      className={`min-w-6 w-10 h-14 rounded m-1 flex items-center justify-center text-xs drop-shadow 
+      className={`min-w-6 w-10 h-14 rounded m-1 flex flex-col items-center justify-center text-xs drop-shadow 
           ${getToothColor(number, selected, disabled)}
           ${teethModifications[number]?.className || ''}
           `}
     >
-      <span className={isMirrorView ? 'transform scale-x-[-1]' : ''}>
+      {FEATURES.TOOTH_ICONS && (
+        <div className="h-8 w-8" style={{ transform: isMirrorView ? 'scale(-1, 1)' : undefined }}>
+          <ToothIcon
+            type={toothType}
+            className={`text-current ${selected ? 'text-white' : 'text-gray-600'} ${row === 0 ? 'rotate-180' : ''}`}
+          />
+        </div>
+      )}
+      < span className={isMirrorView ? 'transform scale-x-[-1]' : ''}>
         {number}
       </span>
-    </button>
+    </button >
   );
 });
 
