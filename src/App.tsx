@@ -6,7 +6,36 @@ import { QRCodeSVG } from 'qrcode.react';
 const FEATURES = {
   DISABLE_TEETH: true,
   HIGHLIGHT_SPECIAL_TEETH: true,
+  MIRROR_VIEW: true,
 } as const;
+
+// Add these new components right after the feature flags:
+const ViewToggle = ({ isMirrorView, onToggle }: { isMirrorView: boolean; onToggle: () => void }) => (
+  <div className="bg-white p-4 rounded-lg mb-4 flex flex-col items-center gap-2">
+    <div className="flex items-center gap-4">
+      <button
+        onClick={onToggle}
+        className={`px-4 py-2 rounded-lg transition-colors ${!isMirrorView ? 'bg-blue-500 text-white' : 'bg-gray-200'
+          }`}
+      >
+        🧑‍⚕️ Normal
+      </button>
+      <button
+        onClick={onToggle}
+        className={`px-4 py-2 rounded-lg transition-colors ${isMirrorView ? 'bg-blue-500 text-white' : 'bg-gray-200'
+          }`}
+      >
+        🪞 Mirror
+      </button>
+    </div>
+    <p className="text-sm text-gray-600">
+      {isMirrorView ?
+        "Mirror View: As seen in the mirror" :
+        "Normal View: As seen by the orthodontist"
+      }
+    </p>
+  </div>
+);
 
 const teethLayout = [
   [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28],
@@ -80,7 +109,7 @@ const getToothColor = (number: number, selected: boolean, disabled: boolean) => 
   return 'bg-yellow-50';
 };
 
-const Tooth = React.memo(({ number, onClick, onToggle, selected, disabled, setRef }: ToothMemo) => {
+const Tooth = React.memo(({ number, onClick, onToggle, selected, disabled, setRef, isMirrorView }: ToothMemo & { isMirrorView: boolean }) => {
   const handleClick = (e: React.MouseEvent) => {
     if (e.ctrlKey || e.metaKey) {
       onToggle(number);
@@ -100,7 +129,9 @@ const Tooth = React.memo(({ number, onClick, onToggle, selected, disabled, setRe
         ${teethModifications[number]?.className || ''}
         ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
     >
-      {number}
+      <span className={isMirrorView ? 'transform scale-x-[-1]' : ''}>
+        {number}
+      </span>
     </button>
   );
 });
@@ -112,6 +143,7 @@ type ToothRef = {
 }
 
 const ElasticPlacer = () => {
+  const [isMirrorView, setIsMirrorView] = useState(false);
   const [elastics, setElastics] = useState<Elastic[]>([]);
   const [currentElastic, setCurrentElastic] = useState<Elastic>([]);
   const [shareUrl, setShareUrl] = useState('');
@@ -285,6 +317,14 @@ const ElasticPlacer = () => {
       <div className="sm:rounded-xl pt-4 sm:p-4 md:p-8 bg-jort drop-shadow-xl">
         <h1 className="text-2xl font-bold mb-4 text-center text-white uppercase">Elastistent</h1>
 
+        {/* View Toggle */}
+        {FEATURES.MIRROR_VIEW && (
+          <ViewToggle
+            isMirrorView={isMirrorView}
+            onToggle={() => setIsMirrorView(prev => !prev)}
+          />
+        )}
+
         {/* Legend - only show if features are enabled */}
         {(FEATURES.HIGHLIGHT_SPECIAL_TEETH || FEATURES.DISABLE_TEETH) && (
           <div className="bg-white p-4 rounded-lg mb-4 flex flex-wrap gap-4 justify-center">
@@ -310,7 +350,9 @@ const ElasticPlacer = () => {
         )}
 
         <div className="max-w-screen mx-auto bg-blue-200 sm:rounded-2xl py-8 sm:px-4 max-w-4xl overflow-x-auto">
-          <div className="relative min-w-[580px] px-2 translate-y-3">
+          <div
+            className={`relative min-w-[580px] px-2 translate-y-3 ${isMirrorView ? 'transform scale-x-[-1]' : ''}`}
+          >
             <svg ref={svgRef} className="absolute inset-0 pointer-events-none z-10 drop-shadow max-w-4xl" style={{ width: '100%', height: '100%' }}></svg>
             {teethLayout.map((row, rowIndex) => (
               <div key={rowIndex} className="flex justify-center flex-1 w-full">
@@ -323,6 +365,7 @@ const ElasticPlacer = () => {
                     selected={currentElastic.includes(tooth)}
                     disabled={FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)}
                     setRef={setToothRef}
+                    isMirrorView={isMirrorView}
                   />
                 ))}
               </div>
