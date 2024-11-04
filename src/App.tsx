@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { X, PlusCircle, Share2, Redo2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 import ViewToggle from './components/ViewToggle';
