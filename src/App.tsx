@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, PlusCircle, Share2, Redo2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
+import ViewToggle from './components/ViewToggle';
+import { useTranslation } from 'react-i18next';
 
 // Feature flags
 const FEATURES = {
@@ -8,34 +10,6 @@ const FEATURES = {
   HIGHLIGHT_SPECIAL_TEETH: true,
   MIRROR_VIEW: true,
 } as const;
-
-// Add these new components right after the feature flags:
-const ViewToggle = ({ isMirrorView, onToggle }: { isMirrorView: boolean; onToggle: () => void }) => (
-  <div className="bg-white p-4 rounded-lg mb-4 flex flex-col items-center gap-2">
-    <div className="flex items-center gap-4">
-      <button
-        onClick={onToggle}
-        className={`px-4 py-2 rounded-lg transition-colors ${!isMirrorView ? 'bg-blue-500 text-white' : 'bg-gray-200'
-          }`}
-      >
-        🧑‍⚕️ Normal
-      </button>
-      <button
-        onClick={onToggle}
-        className={`px-4 py-2 rounded-lg transition-colors ${isMirrorView ? 'bg-blue-500 text-white' : 'bg-gray-200'
-          }`}
-      >
-        🪞 Mirror
-      </button>
-    </div>
-    <p className="text-sm text-gray-600">
-      {isMirrorView ?
-        "Mirror View: As seen in the mirror" :
-        "Normal View: As seen by the orthodontist"
-      }
-    </p>
-  </div>
-);
 
 const teethLayout = [
   [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28],
@@ -143,6 +117,7 @@ type ToothRef = {
 }
 
 const ElasticPlacer = () => {
+  const { t } = useTranslation();
   const [isMirrorView, setIsMirrorView] = useState(false);
   const [elastics, setElastics] = useState<Elastic[]>([]);
   const [currentElastic, setCurrentElastic] = useState<Elastic>([]);
@@ -315,7 +290,9 @@ const ElasticPlacer = () => {
   return (
     <div className="container mx-auto sm:p-4 md:p-8">
       <div className="sm:rounded-xl pt-4 sm:p-4 md:p-8 bg-jort drop-shadow-xl">
-        <h1 className="text-2xl font-bold mb-4 text-center text-white uppercase">Elastistent</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center text-white uppercase">
+          {t('title')}
+        </h1>
 
         {/* View Toggle */}
         {FEATURES.MIRROR_VIEW && (
@@ -332,18 +309,18 @@ const ElasticPlacer = () => {
               <>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-green-200 rounded"></div>
-                  <span>Middle Incisors</span>
+                  <span>{t('legend.middleIncisors')}</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <div className="w-4 h-4 bg-purple-200 rounded"></div>
-                  <span>Canines</span>
+                  <span>{t('legend.canines')}</span>
                 </div>
               </>
             )}
             {FEATURES.DISABLE_TEETH && (
               <div className="flex items-center gap-2">
                 <div className="w-4 h-4 bg-gray-300 rounded"></div>
-                <span>Disabled Teeth (Cmd/Ctrl + Click)</span>
+                <span>{t('legend.disabledTeeth')}</span>
               </div>
             )}
           </div>
@@ -380,43 +357,43 @@ const ElasticPlacer = () => {
             onClick={addElastic}
             className={`w-full bg-jort text-white px-4 py-2 rounded flex flex-row items-center gap-2 ${currentElastic.length < 2 ? 'opacity-30 cursor-not-allowed' : ''}`}
             disabled={currentElastic.length < 2}
-            title={currentElastic.length < 2 ? 'Selecteer minimaal 2 tanden' : 'Voeg elastiekje toe'}
+            title={currentElastic.length < 2 ? t('tooltips.selectTeeth') : t('tooltips.addElastic')}
           >
             <PlusCircle size={16} />
-            Elastiekje toevoegen
+            {t('buttons.addElastic')}
           </button>
           <button
             onClick={resetAll}
             className="w-full bg-red-500 text-white px-4 py-2 rounded flex flex-row items-center gap-2"
           >
             <Redo2 size={16} />
-            Begin opnieuw
+            {t('buttons.restart')}
           </button>
           <button
             onClick={handleShare}
             className="w-full bg-green-500 text-white px-4 py-2 rounded flex flex-row items-center gap-2"
           >
             <Share2 size={16} />
-            Delen
+            {t('buttons.share')}
           </button>
         </div>
         <div className='mx-auto'>
           <QRCodeSVG value={shareUrl} size={196} />
         </div>
         <div>
-          <h2 className="text-xl font-semibold">Elastiekjes:</h2>
+          <h2 className="text-xl font-semibold">{t('elastics.title')}</h2>
 
           {elastics.length === 0 && (
-            <p className="text-gray-500 text-sm">Geen elastiekjes geconfigureerd</p>
+            <p className="text-gray-500 text-sm">{t('elastics.none')}</p>
           )}
 
           {elastics.map((elastic, index) => (
             <div key={index} className="flex items-center justify-between my-2 w-full">
               <span className="mr-2">
-                Elastiekje {index + 1}: {elastic.join(' → ')}
+                {t('elastics.elastic', { number: index + 1, teeth: elastic.join(' → ') })}
               </span>
               <button
-                title="Verwijder elastiekje"
+                title={t('buttons.removeElastic')}
                 onClick={() => removeElastic(index)}
                 className="bg-red-500 text-white p-1 rounded"
               >
@@ -429,7 +406,8 @@ const ElasticPlacer = () => {
 
       <small className="block text-center mt-8 text-gray-500">
         {/* copyright by Drikus Roor, Koko Koding with current year */}
-        &copy; {new Date().getFullYear().toString()} Drikus Roor, <a href="https://kokokoding.nl" target="_blank" rel="noopener noreferrer" className="text-jort hover:underline">Koko Koding</a>
+        {t('footer.copyright', { year: new Date().getFullYear() })}&nbsp;
+        <a href="https://kokokoding.nl" target="_blank" rel="noopener noreferrer" className="text-jort hover:underline">Koko Koding</a>
       </small>
 
     </div>
