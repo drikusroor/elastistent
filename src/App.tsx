@@ -151,16 +151,25 @@ const ElasticPlacer = () => {
 
     // Draw new lines for each elastic
     elastics.forEach((elastic, index) => {
-
       if (!svgRef.current) return;
 
+      const svgRect = svgRef.current.getBoundingClientRect();
       const points = elastic.map(toothNumber => {
         const rect = toothRefs.current[toothNumber]?.getBoundingClientRect();
-        const svgRect = svgRef.current!.getBoundingClientRect();
-        return rect ? {
-          x: rect.left - svgRect.left + rect.width / 2,
+        if (!rect) return null;
+
+        // Calculate the base x position
+        const baseX = rect.left - svgRect.left + rect.width / 2;
+
+        // If in mirror view, flip the x coordinate relative to the SVG's center
+        const x = isMirrorView
+          ? svgRect.width - baseX
+          : baseX;
+
+        return {
+          x,
           y: rect.top - svgRect.top + rect.height / 2
-        } : null;
+        };
       }).filter(point => point !== null);
 
       if (points.length > 1) {
@@ -173,7 +182,7 @@ const ElasticPlacer = () => {
         svgRef.current.appendChild(path);
       }
     });
-  }, [elastics]);
+  }, [elastics, isMirrorView]);
 
   useEffect(() => {
     const handleResize = () => {
