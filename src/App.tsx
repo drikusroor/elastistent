@@ -2,10 +2,19 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { X, PlusCircle, Share2, Redo2 } from 'lucide-react';
 import { QRCodeSVG } from 'qrcode.react';
 
+// Feature flags
+const FEATURES = {
+  DISABLE_TEETH: true,
+  HIGHLIGHT_SPECIAL_TEETH: true,
+} as const;
+
 const teethLayout = [
   [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28],
   [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38]
 ];
+
+const middleIncisors = [11, 21, 31, 41];
+const canines = [13, 23, 33, 43];
 
 type TeethMofidication = {
   [key: number]: {
@@ -55,20 +64,46 @@ const teethModifications: TeethMofidication = {
 type ToothMemo = {
   number: number;
   onClick: (number: number) => void;
+  onToggle: (number: number) => void;
   selected: boolean;
+  disabled: boolean;
   setRef: (number: number, ref: HTMLButtonElement) => void;
 }
 
-const Tooth = React.memo(({ number, onClick, selected, setRef }: ToothMemo) => (
-  <button
-    ref={(el: HTMLButtonElement) => setRef(number, el)}
-    onClick={() => onClick(number)}
-    className={`min-w-6 w-10 h-14 rounded m-1 flex items-center justify-center text-xs drop-shadow ${selected ? 'bg-blue-500 text-white' : 'bg-yellow-50'
-      } ${teethModifications[number]?.className || ''}`}
-  >
-    {number}
-  </button>
-));
+const getToothColor = (number: number, selected: boolean, disabled: boolean) => {
+  if (disabled && FEATURES.DISABLE_TEETH) return 'bg-gray-300';
+  if (selected) return 'bg-blue-500 text-white';
+  if (FEATURES.HIGHLIGHT_SPECIAL_TEETH) {
+    if (middleIncisors.includes(number)) return 'bg-green-200';
+    if (canines.includes(number)) return 'bg-purple-200';
+  }
+  return 'bg-yellow-50';
+};
+
+const Tooth = React.memo(({ number, onClick, onToggle, selected, disabled, setRef }: ToothMemo) => {
+  const handleClick = (e: React.MouseEvent) => {
+    if (e.ctrlKey || e.metaKey) {
+      onToggle(number);
+    } else {
+      onClick(number);
+    }
+  };
+
+  const isDisabled = disabled && FEATURES.DISABLE_TEETH;
+
+  return (
+    <button
+      ref={(el: HTMLButtonElement) => setRef(number, el)}
+      onClick={handleClick}
+      className={`min-w-6 w-10 h-14 rounded m-1 flex items-center justify-center text-xs drop-shadow 
+        ${getToothColor(number, selected, disabled)}
+        ${teethModifications[number]?.className || ''}
+        ${isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'}`}
+    >
+      {number}
+    </button>
+  );
+});
 
 type Elastic = number[];
 
@@ -80,13 +115,16 @@ const ElasticPlacer = () => {
   const [elastics, setElastics] = useState<Elastic[]>([]);
   const [currentElastic, setCurrentElastic] = useState<Elastic>([]);
   const [shareUrl, setShareUrl] = useState('');
+  const [disabledTeeth, setDisabledTeeth] = useState<number[]>([]);
   const toothRefs = useRef<ToothRef>({});
   const svgRef = useRef<SVGSVGElement>(null);
   const initialLoadDone = useRef(false);
 
+  // Load from URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const savedElastics = params.get('elastics');
+    const savedDisabledTeeth = params.get('disabled');
 
     if (savedElastics) {
       try {
@@ -96,36 +134,73 @@ const ElasticPlacer = () => {
         console.error("Error parsing elastics from URL:", error);
       }
     }
+
+    if (FEATURES.DISABLE_TEETH && savedDisabledTeeth) {
+      try {
+        const parsedDisabledTeeth = JSON.parse(savedDisabledTeeth);
+        setDisabledTeeth(parsedDisabledTeeth);
+      } catch (error) {
+        console.error("Error parsing disabled teeth from URL:", error);
+      }
+    }
+
     initialLoadDone.current = true;
   }, []);
 
+  // Update URL
   useEffect(() => {
     if (initialLoadDone.current) {
-      const elasticsParam = elastics.length > 0 ? `?elastics=${JSON.stringify(elastics)}` : '';
-      const newUrl = `${window.location.origin}${window.location.pathname}${elasticsParam}`;
+      const params = new URLSearchParams();
+      if (elastics.length > 0) {
+        params.set('elastics', JSON.stringify(elastics));
+      }
+      if (FEATURES.DISABLE_TEETH && disabledTeeth.length > 0) {
+        params.set('disabled', JSON.stringify(disabledTeeth));
+      }
+      const newUrl = `${window.location.origin}${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
       window.history.pushState({ path: newUrl }, '', newUrl);
       setShareUrl(newUrl);
     }
-  }, [elastics]);
+  }, [elastics, disabledTeeth]);
 
   useEffect(() => {
     if (initialLoadDone.current) {
-      drawElastics();
+      // Small delay to ensure DOM is updated
+      requestAnimationFrame(() => {
+        drawElastics();
+      });
     }
-  }, [elastics, initialLoadDone.current]);
+  }, [elastics, initialLoadDone]);
 
   const handleToothClick = useCallback((number: number) => {
-    setCurrentElastic(prev =>
-      prev.includes(number)
-        ? prev.filter(n => n !== number)
-        : [...prev, number]
-    );
+    if (!FEATURES.DISABLE_TEETH || !disabledTeeth.includes(number)) {
+      setCurrentElastic(prev =>
+        prev.includes(number)
+          ? prev.filter(n => n !== number)
+          : [...prev, number]
+      );
+    }
+  }, [disabledTeeth]);
+
+  const handleToothToggle = useCallback((number: number) => {
+    if (FEATURES.DISABLE_TEETH) {
+      setDisabledTeeth(prev =>
+        prev.includes(number)
+          ? prev.filter(n => n !== number)
+          : [...prev, number]
+      );
+      setCurrentElastic(prev => prev.filter(n => n !== number));
+    }
   }, []);
 
   const addElastic = useCallback(() => {
     if (currentElastic.length > 1) {
       setElastics(prev => [...prev, currentElastic]);
       setCurrentElastic([]);
+      // Force immediate redraw
+      requestAnimationFrame(() => {
+        drawElastics();
+      });
     }
   }, [currentElastic]);
 
@@ -209,6 +284,31 @@ const ElasticPlacer = () => {
     <div className="container mx-auto sm:p-4 md:p-8">
       <div className="sm:rounded-xl pt-4 sm:p-4 md:p-8 bg-jort drop-shadow-xl">
         <h1 className="text-2xl font-bold mb-4 text-center text-white uppercase">Elastistent</h1>
+
+        {/* Legend - only show if features are enabled */}
+        {(FEATURES.HIGHLIGHT_SPECIAL_TEETH || FEATURES.DISABLE_TEETH) && (
+          <div className="bg-white p-4 rounded-lg mb-4 flex flex-wrap gap-4 justify-center">
+            {FEATURES.HIGHLIGHT_SPECIAL_TEETH && (
+              <>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-green-200 rounded"></div>
+                  <span>Middle Incisors</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-purple-200 rounded"></div>
+                  <span>Canines</span>
+                </div>
+              </>
+            )}
+            {FEATURES.DISABLE_TEETH && (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 bg-gray-300 rounded"></div>
+                <span>Disabled Teeth (Cmd/Ctrl + Click)</span>
+              </div>
+            )}
+          </div>
+        )}
+
         <div className="max-w-screen mx-auto bg-blue-200 sm:rounded-2xl py-8 sm:px-4 max-w-4xl overflow-x-auto">
           <div className="relative min-w-[580px] px-2 translate-y-3">
             <svg ref={svgRef} className="absolute inset-0 pointer-events-none z-10 drop-shadow max-w-4xl" style={{ width: '100%', height: '100%' }}></svg>
@@ -219,7 +319,9 @@ const ElasticPlacer = () => {
                     key={tooth}
                     number={tooth}
                     onClick={handleToothClick}
+                    onToggle={handleToothToggle}
                     selected={currentElastic.includes(tooth)}
+                    disabled={FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)}
                     setRef={setToothRef}
                   />
                 ))}
@@ -228,6 +330,7 @@ const ElasticPlacer = () => {
           </div>
         </div>
       </div>
+
       <div className="mx-auto mt-4 flex flex-col sm:flex-row justify-center md:justify-between items-center sm:items-start gap-4 md:min-w-72 md:p-8">
         <div className="flex flex-col gap-4 min-w-56">
           <button
