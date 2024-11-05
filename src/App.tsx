@@ -6,6 +6,7 @@ import { useTranslation } from 'react-i18next';
 import Tooth from './components/Tooth';
 import { FEATURES } from './config';
 import LanguageButtons from './components/LanguageButtons';
+import Logo from './components/Logo';
 
 
 const teethLayout = [
@@ -212,7 +213,8 @@ const ElasticPlacer = () => {
   return (
     <div className="container mx-auto sm:p-4 md:p-8">
       <div className="sm:rounded-xl pt-4 sm:p-4 md:p-8 bg-jort drop-shadow-xl">
-        <h1 className="text-2xl font-bold mb-4 text-center text-white uppercase">
+        <h1 className="text-2xl font-bold mb-4 text-center text-white uppercase flex items-center justify-center">
+          <Logo className="inline-block w-8" />
           {t('title')}
         </h1>
 
