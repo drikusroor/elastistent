@@ -171,10 +171,10 @@ const ElasticPlacer = () => {
     }
 
     // Draw new lines for each elastic
-    elastics.forEach((elastic, index) => {
+    elastics.forEach((elastic) => {
       if (!svgRef.current) return;
 
-      const elasticTypeConfig = ELASTIC_TYPES.find(et => et.name === elastic.type) || ELASTIC_TYPES[0];
+      const elasticTypeConfig = ELASTIC_TYPES.find(et => et.id === elastic.type) || ELASTIC_TYPES[0];
       const svgRect = svgRef.current.getBoundingClientRect();
       const points = elastic.teeth.map(toothNumber => {
         const rect = toothRefs.current[toothNumber]?.getBoundingClientRect();
