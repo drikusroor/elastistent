@@ -44,7 +44,7 @@ const ElasticPlacer = () => {
   // Load from URL
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    const savedElastics = params.get('elastics');
+    const savedElastics = params.get('e');
     const savedDisabledTeeth = params.get('t');
     const savedMirrorView = params.get('m');
 
@@ -87,7 +87,7 @@ const ElasticPlacer = () => {
     if (initialLoadDone.current) {
       const params = new URLSearchParams();
       if (elastics.length > 0) {
-        params.set('elastics', JSON.stringify(elastics));
+        params.set('e', JSON.stringify(elastics));
       }
       if (FEATURES.DISABLE_TEETH && disabledTeeth.length > 0) {
         params.set('t', JSON.stringify(disabledTeeth));
