@@ -13,28 +13,27 @@ const teethLayout = [
   [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38]
 ];
 
-// New configuration for elastic types
 const ELASTIC_TYPES = [
-  { name: 'Rabbit', color: '#FF5555', thickness: 3, icon: '🐰' },
-  { name: 'Chipmunk', color: '#5555CC', thickness: 4, icon: '🐿️' },
-  { name: 'Rox', color: '#44DD44', thickness: 5, icon: '🦊' },
+  { id: 0, name: 'Rabbit', color: '#FF5555', thickness: 3, icon: '🐰' },
+  { id: 1, name: 'Chipmunk', color: '#5555CC', thickness: 4, icon: '🐿️' },
+  { id: 2, name: 'Rox', color: '#44DD44', thickness: 5, icon: '🦊' },
 ];
 
 type Elastic = {
   teeth: number[];
-  type: string;
+  type: number; // Using numeric ID now
 };
 
 type ToothRef = {
   [key: number]: HTMLButtonElement;
-}
+};
 
 const ElasticPlacer = () => {
   const { t } = useTranslation();
   const [isMirrorView, setIsMirrorView] = useState(false);
   const [elastics, setElastics] = useState<Elastic[]>([]);
   const [currentElastic, setCurrentElastic] = useState<number[]>([]);
-  const [currentElasticType, setCurrentElasticType] = useState<string>(ELASTIC_TYPES[0].name);
+  const [currentElasticType, setCurrentElasticType] = useState<number>(ELASTIC_TYPES[0].id);
   const [shareUrl, setShareUrl] = useState('');
   const [disabledTeeth, setDisabledTeeth] = useState<number[]>([]);
   const toothRefs = useRef<ToothRef>({});
@@ -45,19 +44,21 @@ const ElasticPlacer = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const savedElastics = params.get('elastics');
-    const savedDisabledTeeth = params.get('disabled');
-    const savedMirrorView = params.get('mirror');
+    const savedDisabledTeeth = params.get('t');
+    const savedMirrorView = params.get('m');
 
     if (savedElastics) {
       try {
         let parsedElastics = JSON.parse(savedElastics);
-        // Handle backward compatibility: if parsedElastics is an array of arrays, convert to array of objects
-        if (Array.isArray(parsedElastics) && parsedElastics.length > 0 && Array.isArray(parsedElastics[0])) {
-          parsedElastics = parsedElastics.map((teethArr: number[]) => ({
-            teeth: teethArr,
-            type: ELASTIC_TYPES[0].name // default type if not specified
-          }));
-        }
+        // Convert old format (if needed) to numeric IDs:
+        parsedElastics = parsedElastics.map((el: any) => {
+          // If el.type is a string name, convert to numeric id
+          if (typeof el.type === 'string') {
+            const foundType = ELASTIC_TYPES.find(et => et.name === el.type) || ELASTIC_TYPES[0];
+            el.type = foundType.id;
+          }
+          return el;
+        });
         setElastics(parsedElastics);
       } catch (error) {
         console.error("Error parsing elastics from URL:", error);
@@ -74,7 +75,7 @@ const ElasticPlacer = () => {
     }
 
     if (FEATURES.MIRROR_VIEW && savedMirrorView) {
-      setIsMirrorView(savedMirrorView === 'true');
+      setIsMirrorView(savedMirrorView === '1');
     }
 
     initialLoadDone.current = true;
@@ -88,10 +89,10 @@ const ElasticPlacer = () => {
         params.set('elastics', JSON.stringify(elastics));
       }
       if (FEATURES.DISABLE_TEETH && disabledTeeth.length > 0) {
-        params.set('disabled', JSON.stringify(disabledTeeth));
+        params.set('t', JSON.stringify(disabledTeeth));
       }
-      if (FEATURES.MIRROR_VIEW && isMirrorView) {
-        params.set('mirror', 'true');
+      if (FEATURES.MIRROR_VIEW) {
+        params.set('m', isMirrorView ? '1' : '0');
       }
       const newUrl = `${window.location.origin}${window.location.pathname}${params.toString() ? '?' + params.toString() : ''}`;
       window.history.pushState({ path: newUrl }, '', newUrl);
@@ -108,7 +109,15 @@ const ElasticPlacer = () => {
     }
   }, [elastics, initialLoadDone]);
 
+  const toothAlreadyInElastic = useCallback((toothNumber: number) => {
+    return elastics.some(elastic => elastic.teeth.includes(toothNumber));
+  }, [elastics]);
+
   const handleToothClick = useCallback((number: number) => {
+    if (!FEATURES.ALLOW_MULTIPLE_ELASTICS_PER_TOOTH && toothAlreadyInElastic(number)) {
+      return; 
+    }
+
     if (!FEATURES.DISABLE_TEETH || !disabledTeeth.includes(number)) {
       setCurrentElastic(prev =>
         prev.includes(number)
@@ -116,7 +125,7 @@ const ElasticPlacer = () => {
           : [...prev, number]
       );
     }
-  }, [disabledTeeth]);
+  }, [disabledTeeth, toothAlreadyInElastic]);
 
   const handleToothToggle = useCallback((number: number) => {
     if (FEATURES.DISABLE_TEETH) {
@@ -133,10 +142,6 @@ const ElasticPlacer = () => {
     if (currentElastic.length > 1) {
       setElastics(prev => [...prev, { teeth: currentElastic, type: currentElasticType }]);
       setCurrentElastic([]);
-      // Force immediate redraw
-      requestAnimationFrame(() => {
-        drawElastics();
-      });
     }
   }, [currentElastic, currentElasticType]);
 
@@ -277,7 +282,7 @@ const ElasticPlacer = () => {
         <div className="bg-white p-4 rounded-lg mb-4">
           <div className="flex flex-wrap gap-4">
             {ELASTIC_TYPES.map((etype) => (
-              <div key={etype.name} className="flex items-center gap-2 drop-shadow-xs">
+              <div key={etype.id} className="flex items-center gap-2 drop-shadow-xs">
                 <svg width="30" height="10">
                   <line
                     x1="0"
@@ -327,15 +332,15 @@ const ElasticPlacer = () => {
           <div className="flex gap-2">
             {ELASTIC_TYPES.map((etype) => (
               <button
-                key={etype.name}
-                onClick={() => setCurrentElasticType(etype.name)}
-                style={currentElasticType === etype.name ? { backgroundColor:  etype.color } : {borderColor: etype.color}}
+                key={etype.id}
+                onClick={() => setCurrentElasticType(etype.id)}
+                style={currentElasticType === etype.id ? { backgroundColor: etype.color } : { borderColor: etype.color }}
                 className={`px-4 py-2 rounded border
-          ${currentElasticType === etype.name ? 'text-white' : 'bg-white text-black'}`}
+          ${currentElasticType === etype.id ? 'text-white' : 'bg-white text-black'}`}
                 title={t('elastics.typeOption', { type: etype.name })}
               >
                 {etype.icon && (<span className='bg-white rounded-full p-0.5 mr-1'>{etype.icon}</span>)}
-                <span className={`${etype.icon ? 'text-sm': ''}`}>{t('elastics.typeOption', { type: etype.name })}</span>
+                <span className={`${etype.icon ? 'text-sm' : ''}`}>{t('elastics.typeOption', { type: etype.name })}</span>
               </button>
             ))}
           </div>
@@ -377,12 +382,16 @@ const ElasticPlacer = () => {
           )}
 
           {elastics.map((elastic, index) => {
-            const etype = ELASTIC_TYPES.find(et => et.name === elastic.type) || ELASTIC_TYPES[0];
+            const etype = ELASTIC_TYPES.find(et => et.id === elastic.type) || ELASTIC_TYPES[0];
             return (
-              <div key={index} className="flex items-center justify-between my-2 w-full">
+              <div
+                key={index}
+                className={`flex items-center justify-between my-2 w-full 
+                  `}
+              >
                 <span className="mr-2">
                   {t('elastics.elastic', { number: index + 1, teeth: elastic.teeth.join(' → ') })}
-                  &nbsp;- {t('elastics.elasticTypeDisplay', { type: elastic.type })}&nbsp;
+                  &nbsp;- {t('elastics.elasticTypeDisplay', { type: etype.name })}&nbsp;
                   <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
                     <svg width="30" height="10" style={{ verticalAlign: 'middle' }}>
                       <line
