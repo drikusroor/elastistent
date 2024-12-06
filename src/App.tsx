@@ -329,7 +329,7 @@ const ElasticPlacer = () => {
               <button
                 key={etype.name}
                 onClick={() => setCurrentElasticType(etype.name)}
-                style={currentElasticType === etype.name ? { backgroundColor:  etype.color } : {}}
+                style={currentElasticType === etype.name ? { backgroundColor:  etype.color } : {borderColor: etype.color}}
                 className={`px-4 py-2 rounded border
           ${currentElasticType === etype.name ? 'text-white' : 'bg-white text-black'}`}
                 title={t('elastics.typeOption', { type: etype.name })}
