@@ -15,9 +15,9 @@ const teethLayout = [
 
 // New configuration for elastic types
 const ELASTIC_TYPES = [
-  { name: 'Rabbit', color: '#FFAAAA', thickness: 3, icon: '🐰' },
-  { name: 'Chipmunk', color: '#AAAACC', thickness: 4, icon: '🐿️' },
-  { name: 'Rox', color: '#AAFFAA', thickness: 5, icon: '🦊' },
+  { name: 'Rabbit', color: '#FF5555', thickness: 3, icon: '🐰' },
+  { name: 'Chipmunk', color: '#5555CC', thickness: 4, icon: '🐿️' },
+  { name: 'Rox', color: '#44DD44', thickness: 5, icon: '🦊' },
 ];
 
 type Elastic = {
@@ -329,8 +329,9 @@ const ElasticPlacer = () => {
               <button
                 key={etype.name}
                 onClick={() => setCurrentElasticType(etype.name)}
+                style={currentElasticType === etype.name ? { backgroundColor:  etype.color } : {}}
                 className={`px-4 py-2 rounded border
-          ${currentElasticType === etype.name ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}
+          ${currentElasticType === etype.name ? 'text-white' : 'bg-white text-black'}`}
                 title={t('elastics.typeOption', { type: etype.name })}
               >
                 {etype.icon && (<span className='bg-white rounded-full p-0.5 mr-1'>{etype.icon}</span>)}
