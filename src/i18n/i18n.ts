@@ -16,6 +16,7 @@ const resources = {
         middleIncisors: 'Middle Incisors',
         canines: 'Canines',
         disabledTeeth: 'Disabled Teeth (Cmd/Ctrl + Click)',
+        elasticType: '{{type}}',
       },
       views: {
         normal: '🧑‍⚕️ Normal',
@@ -37,6 +38,9 @@ const resources = {
         title: 'Elastics:',
         none: 'No elastics configured',
         elastic: 'Elastic {{number}}: {{teeth}}',
+        elasticTypeDisplay: '{{type}}',
+        typeOption: '{{type}}',
+        elasticTooltip: 'Elastic Tooltip',
       },
       sharing: {
         title: 'My Elastistent configuration',
@@ -60,6 +64,7 @@ const resources = {
         middleIncisors: 'Middelste Snijtanden',
         canines: 'Hoektanden',
         disabledTeeth: 'Uitgeschakelde Tanden (Cmd/Ctrl + Klik)',
+        elasticType: '{{type}}',
       },
       views: {
         normal: '🧑‍⚕️ Normaal',
@@ -81,6 +86,9 @@ const resources = {
         title: 'Elastiekjes:',
         none: 'Geen elastiekjes geconfigureerd',
         elastic: 'Elastiekje {{number}}: {{teeth}}',
+        elasticTypeDisplay: '{{type}}',
+        typeOption: '{{type}}',
+        elasticTooltip: 'Elastiekje Tooltip',
       },
       sharing: {
         title: 'Mijn Elastistent configuratie',

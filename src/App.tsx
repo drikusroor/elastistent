@@ -8,13 +8,22 @@ import { FEATURES } from './config';
 import LanguageButtons from './components/LanguageButtons';
 import Logo from './components/Logo';
 
-
 const teethLayout = [
   [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28],
   [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38]
 ];
 
-type Elastic = number[];
+// New configuration for elastic types
+const ELASTIC_TYPES = [
+  { name: 'Rabbit', color: '#FFAAAA', thickness: 3, icon: '🐰' },
+  { name: 'Chipmunk', color: '#AAAACC', thickness: 4, icon: '🐿️' },
+  { name: 'Rox', color: '#AAFFAA', thickness: 5, icon: '🦊' },
+];
+
+type Elastic = {
+  teeth: number[];
+  type: string;
+};
 
 type ToothRef = {
   [key: number]: HTMLButtonElement;
@@ -24,7 +33,8 @@ const ElasticPlacer = () => {
   const { t } = useTranslation();
   const [isMirrorView, setIsMirrorView] = useState(false);
   const [elastics, setElastics] = useState<Elastic[]>([]);
-  const [currentElastic, setCurrentElastic] = useState<Elastic>([]);
+  const [currentElastic, setCurrentElastic] = useState<number[]>([]);
+  const [currentElasticType, setCurrentElasticType] = useState<string>(ELASTIC_TYPES[0].name);
   const [shareUrl, setShareUrl] = useState('');
   const [disabledTeeth, setDisabledTeeth] = useState<number[]>([]);
   const toothRefs = useRef<ToothRef>({});
@@ -40,7 +50,14 @@ const ElasticPlacer = () => {
 
     if (savedElastics) {
       try {
-        const parsedElastics = JSON.parse(savedElastics);
+        let parsedElastics = JSON.parse(savedElastics);
+        // Handle backward compatibility: if parsedElastics is an array of arrays, convert to array of objects
+        if (Array.isArray(parsedElastics) && parsedElastics.length > 0 && Array.isArray(parsedElastics[0])) {
+          parsedElastics = parsedElastics.map((teethArr: number[]) => ({
+            teeth: teethArr,
+            type: ELASTIC_TYPES[0].name // default type if not specified
+          }));
+        }
         setElastics(parsedElastics);
       } catch (error) {
         console.error("Error parsing elastics from URL:", error);
@@ -114,14 +131,14 @@ const ElasticPlacer = () => {
 
   const addElastic = useCallback(() => {
     if (currentElastic.length > 1) {
-      setElastics(prev => [...prev, currentElastic]);
+      setElastics(prev => [...prev, { teeth: currentElastic, type: currentElasticType }]);
       setCurrentElastic([]);
       // Force immediate redraw
       requestAnimationFrame(() => {
         drawElastics();
       });
     }
-  }, [currentElastic]);
+  }, [currentElastic, currentElasticType]);
 
   const removeElastic = useCallback((index: number) => {
     setElastics(prev => prev.filter((_, i) => i !== index));
@@ -152,36 +169,42 @@ const ElasticPlacer = () => {
     elastics.forEach((elastic, index) => {
       if (!svgRef.current) return;
 
+      const elasticTypeConfig = ELASTIC_TYPES.find(et => et.name === elastic.type) || ELASTIC_TYPES[0];
       const svgRect = svgRef.current.getBoundingClientRect();
-      const points = elastic.map(toothNumber => {
+      const points = elastic.teeth.map(toothNumber => {
         const rect = toothRefs.current[toothNumber]?.getBoundingClientRect();
         if (!rect) return null;
 
-        // Calculate the base x position
         const baseX = rect.left - svgRect.left + rect.width / 2;
-
-        // If in mirror view, flip the x coordinate relative to the SVG's center
         const x = isMirrorView
           ? svgRect.width - baseX
           : baseX;
-
         return {
           x,
           y: rect.top - svgRect.top + rect.height / 2
         };
-      }).filter(point => point !== null);
+      }).filter(point => point !== null) as { x: number; y: number }[];
 
       if (points.length > 1) {
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         const d = points.map((point, i) => `${i === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
-        path.setAttribute('d', `${d} Z`);
+        path.setAttribute('d', d);
         path.setAttribute('fill', 'none');
-        path.setAttribute('stroke', `hsl(${index * 137.5 % 360}, 70%, 50%)`);
-        path.setAttribute('stroke-width', '2');
+        path.setAttribute('stroke', elasticTypeConfig.color);
+        path.setAttribute('stroke-width', elasticTypeConfig.thickness.toString());
+
+        // Add a title for hover tooltip
+        const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+        title.textContent = `${t('elastics.elasticTooltip', {
+          type: elastic.type,
+          teeth: elastic.teeth.join(' → ')
+        })}`;
+        path.appendChild(title);
+
         svgRef.current.appendChild(path);
       }
     });
-  }, [elastics, isMirrorView]);
+  }, [elastics, isMirrorView, t]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -198,17 +221,17 @@ const ElasticPlacer = () => {
   const handleShare = useCallback(() => {
     if (navigator.share) {
       navigator.share({
-        title: 'Mijn Elastistent configuratie',
+        title: t('share.title'),
         url: shareUrl
       }).catch((error) => console.log('Error sharing', error));
     } else {
       navigator.clipboard.writeText(shareUrl).then(() => {
-        alert('Link gekopieerd naar klembord!');
+        alert(t('share.copied'));
       }, (err) => {
-        console.error('Kon de link niet kopiëren: ', err);
+        console.error(t('share.copyError'), err);
       });
     }
-  }, [shareUrl]);
+  }, [shareUrl, t]);
 
   return (
     <div className="container mx-auto sm:p-4 md:p-8">
@@ -226,7 +249,7 @@ const ElasticPlacer = () => {
           />
         )}
 
-        {/* Legend - only show if features are enabled */}
+        {/* Legend for Teeth */}
         {(FEATURES.HIGHLIGHT_SPECIAL_TEETH || FEATURES.DISABLE_TEETH) && (
           <div className="bg-white p-4 rounded-lg mb-4 flex flex-wrap gap-4 justify-center">
             {FEATURES.HIGHLIGHT_SPECIAL_TEETH && (
@@ -249,6 +272,28 @@ const ElasticPlacer = () => {
             )}
           </div>
         )}
+
+        {/* Legend for Elastics */}
+        <div className="bg-white p-4 rounded-lg mb-4">
+          <div className="flex flex-wrap gap-4">
+            {ELASTIC_TYPES.map((etype) => (
+              <div key={etype.name} className="flex items-center gap-2 drop-shadow-xs">
+                <svg width="30" height="10">
+                  <line
+                    x1="0"
+                    y1="5"
+                    x2="30"
+                    y2="5"
+                    stroke={etype.color}
+                    strokeWidth={etype.thickness}
+                  />
+                </svg>
+                <span>{etype.icon}</span>
+                <span className='text-xs sm:text-base'>{t('legend.elasticType', { type: etype.name })}</span>
+              </div>
+            ))}
+          </div>
+        </div>
 
         <div className="max-w-screen mx-auto bg-blue-200 sm:rounded-2xl py-8 sm:px-4 max-w-4xl overflow-x-auto">
           <div
@@ -277,7 +322,22 @@ const ElasticPlacer = () => {
       </div>
 
       <div className="mx-auto mt-4 flex flex-col sm:flex-row justify-center md:justify-between items-center sm:items-start gap-4 md:min-w-72 md:p-8">
-        <div className="flex flex-col gap-4 min-w-56">
+        <div className="flex flex-col gap-4">
+          {/* Elastic type selection as buttons */}
+          <div className="flex gap-2">
+            {ELASTIC_TYPES.map((etype) => (
+              <button
+                key={etype.name}
+                onClick={() => setCurrentElasticType(etype.name)}
+                className={`px-4 py-2 rounded border 
+          ${currentElasticType === etype.name ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}
+                title={t('elastics.typeOption', { type: etype.name })}
+              >
+                {t('elastics.typeOption', { type: etype.name })}
+              </button>
+            ))}
+          </div>
+
           <button
             onClick={addElastic}
             className={`w-full bg-jort text-white px-4 py-2 rounded flex flex-row items-center gap-2 ${currentElastic.length < 2 ? 'opacity-30 cursor-not-allowed' : ''}`}
@@ -287,6 +347,7 @@ const ElasticPlacer = () => {
             <PlusCircle size={16} />
             {t('buttons.addElastic')}
           </button>
+
           <button
             onClick={resetAll}
             className="w-full bg-red-500 text-white px-4 py-2 rounded flex flex-row items-center gap-2"
@@ -294,6 +355,7 @@ const ElasticPlacer = () => {
             <Redo2 size={16} />
             {t('buttons.restart')}
           </button>
+
           <button
             onClick={handleShare}
             className="w-full bg-green-500 text-white px-4 py-2 rounded flex flex-row items-center gap-2"
@@ -312,29 +374,45 @@ const ElasticPlacer = () => {
             <p className="text-gray-500 text-sm">{t('elastics.none')}</p>
           )}
 
-          {elastics.map((elastic, index) => (
-            <div key={index} className="flex items-center justify-between my-2 w-full">
-              <span className="mr-2">
-                {t('elastics.elastic', { number: index + 1, teeth: elastic.join(' → ') })}
-              </span>
-              <button
-                title={t('buttons.removeElastic')}
-                onClick={() => removeElastic(index)}
-                className="bg-red-500 text-white p-1 rounded"
-              >
-                <X size={16} />
-              </button>
-            </div>
-          ))}
+          {elastics.map((elastic, index) => {
+            const etype = ELASTIC_TYPES.find(et => et.name === elastic.type) || ELASTIC_TYPES[0];
+            return (
+              <div key={index} className="flex items-center justify-between my-2 w-full">
+                <span className="mr-2">
+                  {t('elastics.elastic', { number: index + 1, teeth: elastic.teeth.join(' → ') })}
+                  &nbsp;- {t('elastics.elasticTypeDisplay', { type: elastic.type })}&nbsp;
+                  <span style={{ display: 'inline-block', verticalAlign: 'middle' }}>
+                    <svg width="30" height="10" style={{ verticalAlign: 'middle' }}>
+                      <line
+                        x1="0"
+                        y1="5"
+                        x2="30"
+                        y2="5"
+                        stroke={etype.color}
+                        strokeWidth={etype.thickness}
+                      />
+                    </svg>
+                  </span>
+                </span>
+                <button
+                  title={t('buttons.removeElastic')}
+                  onClick={() => removeElastic(index)}
+                  className="bg-red-500 text-white p-1 rounded"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            );
+          })}
         </div>
       </div>
 
       <small className="block text-center mt-8 text-gray-500">
-        {/* copyright by Drikus Roor, Koko Koding with current year */}
-        {t('footer.copyright', { year: new Date().getFullYear() })}&nbsp;
+        {t('footer.copyright', { year: new Date().getFullYear() })}
+        &nbsp;
         <a href="https://kokokoding.nl" target="_blank" rel="noopener noreferrer" className="text-jort hover:underline">Koko Koding</a>
       </small>
-      
+
       <LanguageButtons />
     </div>
   );
