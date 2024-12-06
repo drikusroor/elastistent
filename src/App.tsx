@@ -36,6 +36,7 @@ const ElasticPlacer = () => {
   const [currentElasticType, setCurrentElasticType] = useState<number>(ELASTIC_TYPES[0].id);
   const [shareUrl, setShareUrl] = useState('');
   const [disabledTeeth, setDisabledTeeth] = useState<number[]>([]);
+  const [onHoverListItem, setOnHoverListItem] = useState<number | null>(null);
   const toothRefs = useRef<ToothRef>({});
   const svgRef = useRef<SVGSVGElement>(null);
   const initialLoadDone = useRef(false);
@@ -107,7 +108,7 @@ const ElasticPlacer = () => {
         drawElastics();
       });
     }
-  }, [elastics, initialLoadDone]);
+  }, [elastics, initialLoadDone, onHoverListItem,]);
 
   const toothAlreadyInElastic = useCallback((toothNumber: number) => {
     return elastics.some(elastic => elastic.teeth.includes(toothNumber));
@@ -171,8 +172,10 @@ const ElasticPlacer = () => {
     }
 
     // Draw new lines for each elastic
-    elastics.forEach((elastic) => {
+    elastics.forEach((elastic, index) => {
       if (!svgRef.current) return;
+
+      const shouldHighlight = onHoverListItem === index;
 
       const elasticTypeConfig = ELASTIC_TYPES.find(et => et.id === elastic.type) || ELASTIC_TYPES[0];
       const svgRect = svgRef.current.getBoundingClientRect();
@@ -193,6 +196,32 @@ const ElasticPlacer = () => {
       if (points.length > 1) {
         const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         const d = points.map((point, i) => `${i === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
+
+        if (shouldHighlight) {
+
+          // draw an opaque circle behind every point
+          points.forEach((point) => {
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', point.x.toString());
+            circle.setAttribute('cy', point.y.toString());
+            circle.setAttribute('r', '10');
+            circle.setAttribute('fill', elasticTypeConfig.color);
+            circle.setAttribute('stroke', '#000');
+            circle.setAttribute('stroke-width', '2');
+            circle.setAttribute('stroke-opacity', '0.5');
+            svgRef.current?.appendChild(circle);
+          });
+
+          // draw a shadow behind the line
+          const shadow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          shadow.setAttribute('d', d);
+          shadow.setAttribute('fill', 'none');
+          shadow.setAttribute('stroke', '#000');
+          shadow.setAttribute('stroke-width', (elasticTypeConfig.thickness + 4).toString());
+          shadow.setAttribute('stroke-opacity', '0.5');
+          svgRef.current.appendChild(shadow);
+        }
+
         path.setAttribute('d', d);
         path.setAttribute('fill', 'none');
         path.setAttribute('stroke', elasticTypeConfig.color);
@@ -209,7 +238,7 @@ const ElasticPlacer = () => {
         svgRef.current.appendChild(path);
       }
     });
-  }, [elastics, isMirrorView, t]);
+  }, [elastics, isMirrorView, t, onHoverListItem]);
 
   useEffect(() => {
     const handleResize = () => {
@@ -386,8 +415,9 @@ const ElasticPlacer = () => {
             return (
               <div
                 key={index}
-                className={`flex items-center justify-between my-2 w-full 
-                  `}
+                className={`flex items-center justify-between my-2 p-1 rounded w-full ${onHoverListItem === index ? 'bg-gray-200' : ''}`}
+                onMouseEnter={() => setOnHoverListItem(index) }
+                onMouseLeave={() => setOnHoverListItem(null) }
               >
                 <span className="mr-2">
                   {t('elastics.elastic', { number: index + 1, teeth: elastic.teeth.join(' → ') })}
