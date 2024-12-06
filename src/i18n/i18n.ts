@@ -37,7 +37,7 @@ const resources = {
       elastics: {
         title: 'Elastics:',
         none: 'No elastics configured',
-        elastic: 'Elastic {{number}}: {{teeth}}',
+        elastic: '{{teeth}}',
         elasticTypeDisplay: '{{type}}',
         typeOption: '{{type}}',
         elasticTooltip: 'Elastic Tooltip',
@@ -85,7 +85,7 @@ const resources = {
       elastics: {
         title: 'Elastiekjes:',
         none: 'Geen elastiekjes geconfigureerd',
-        elastic: 'Elastiekje {{number}}: {{teeth}}',
+        elastic: '{{teeth}}',
         elasticTypeDisplay: '{{type}}',
         typeOption: '{{type}}',
         elasticTooltip: 'Elastiekje Tooltip',
