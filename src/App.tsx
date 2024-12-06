@@ -116,7 +116,7 @@ const ElasticPlacer = () => {
 
   const handleToothClick = useCallback((number: number) => {
     if (!FEATURES.ALLOW_MULTIPLE_ELASTICS_PER_TOOTH && toothAlreadyInElastic(number)) {
-      return; 
+      return;
     }
 
     if (!FEATURES.DISABLE_TEETH || !disabledTeeth.includes(number)) {
@@ -199,6 +199,18 @@ const ElasticPlacer = () => {
 
         if (shouldHighlight) {
 
+          // draw a shadow behind the line
+          const shadow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          shadow.setAttribute('d', d);
+          shadow.setAttribute('fill', 'none');
+          shadow.setAttribute('stroke', '#000');
+          shadow.setAttribute('stroke-width', (elasticTypeConfig.thickness + 4).toString());
+          shadow.setAttribute('stroke-opacity', '0.5');
+          // round line ends & joins
+          shadow.setAttribute('stroke-linecap', 'round');
+          shadow.setAttribute('stroke-linejoin', 'round');
+          svgRef.current.appendChild(shadow);
+
           // draw an opaque circle behind every point
           points.forEach((point) => {
             const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
@@ -211,21 +223,15 @@ const ElasticPlacer = () => {
             circle.setAttribute('stroke-opacity', '0.5');
             svgRef.current?.appendChild(circle);
           });
-
-          // draw a shadow behind the line
-          const shadow = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          shadow.setAttribute('d', d);
-          shadow.setAttribute('fill', 'none');
-          shadow.setAttribute('stroke', '#000');
-          shadow.setAttribute('stroke-width', (elasticTypeConfig.thickness + 4).toString());
-          shadow.setAttribute('stroke-opacity', '0.5');
-          svgRef.current.appendChild(shadow);
         }
 
         path.setAttribute('d', d);
         path.setAttribute('fill', 'none');
         path.setAttribute('stroke', elasticTypeConfig.color);
         path.setAttribute('stroke-width', elasticTypeConfig.thickness.toString());
+        // round line ends & joins
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
 
         // Add a title for hover tooltip
         const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
@@ -416,8 +422,8 @@ const ElasticPlacer = () => {
               <div
                 key={index}
                 className={`flex items-center justify-between my-2 p-1 rounded w-full ${onHoverListItem === index ? 'bg-gray-200' : ''}`}
-                onMouseEnter={() => setOnHoverListItem(index) }
-                onMouseLeave={() => setOnHoverListItem(null) }
+                onMouseEnter={() => setOnHoverListItem(index)}
+                onMouseLeave={() => setOnHoverListItem(null)}
               >
                 <span className="mr-2">
                   {t('elastics.elastic', { number: index + 1, teeth: elastic.teeth.join(' → ') })}
