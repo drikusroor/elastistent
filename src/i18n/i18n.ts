@@ -41,6 +41,11 @@ const resources = {
         elasticTypeDisplay: '{{type}}',
         typeOption: '{{type}}',
         elasticTooltip: 'Elastic Tooltip',
+        timeOption: {
+          '24h': '🏪 24h',
+          daytime: '☀️ Day',
+          nighttime: '😴 Night',
+        },
       },
       sharing: {
         title: 'My Elastistent configuration',
@@ -89,6 +94,11 @@ const resources = {
         elasticTypeDisplay: '{{type}}',
         typeOption: '{{type}}',
         elasticTooltip: 'Elastiekje Tooltip',
+        timeOption: {
+          '24h': '🏪 24u',
+          daytime: '☀️ Dag',
+          nighttime: '😴 Nacht',
+        },
       },
       sharing: {
         title: 'Mijn Elastistent configuratie',
