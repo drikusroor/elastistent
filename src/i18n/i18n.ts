@@ -16,6 +16,7 @@ const resources = {
         middleIncisors: 'Middle Incisors',
         canines: 'Canines',
         disabledTeeth: 'Disabled Teeth (Cmd/Ctrl + Click)',
+        elasticType: '{{type}}',
       },
       views: {
         normal: '🧑‍⚕️ Normal',
@@ -36,7 +37,15 @@ const resources = {
       elastics: {
         title: 'Elastics:',
         none: 'No elastics configured',
-        elastic: 'Elastic {{number}}: {{teeth}}',
+        elastic: '{{teeth}}',
+        elasticTypeDisplay: '{{type}}',
+        typeOption: '{{type}}',
+        elasticTooltip: 'Elastic Tooltip',
+        timeOption: {
+          '24h': '🏪 24h',
+          daytime: '☀️ Day',
+          nighttime: '😴 Night',
+        },
       },
       sharing: {
         title: 'My Elastistent configuration',
@@ -60,6 +69,7 @@ const resources = {
         middleIncisors: 'Middelste Snijtanden',
         canines: 'Hoektanden',
         disabledTeeth: 'Uitgeschakelde Tanden (Cmd/Ctrl + Klik)',
+        elasticType: '{{type}}',
       },
       views: {
         normal: '🧑‍⚕️ Normaal',
@@ -80,7 +90,15 @@ const resources = {
       elastics: {
         title: 'Elastiekjes:',
         none: 'Geen elastiekjes geconfigureerd',
-        elastic: 'Elastiekje {{number}}: {{teeth}}',
+        elastic: '{{teeth}}',
+        elasticTypeDisplay: '{{type}}',
+        typeOption: '{{type}}',
+        elasticTooltip: 'Elastiekje Tooltip',
+        timeOption: {
+          '24h': '🏪 24u',
+          daytime: '☀️ Dag',
+          nighttime: '😴 Nacht',
+        },
       },
       sharing: {
         title: 'Mijn Elastistent configuratie',
