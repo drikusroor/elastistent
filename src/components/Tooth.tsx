@@ -74,6 +74,16 @@ const getToothColor = (number: number, selected: boolean, disabled: boolean) => 
 
 const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, setRef, isMirrorView }: ToothMemo & { isMirrorView: boolean }) => {
   const handleClick = (e: React.MouseEvent) => {
+
+    // get click location on the tooth (y coordinate is most important)
+    // we want to know if the click was on the top or bottom half of the tooth
+    const rect = e.currentTarget.getBoundingClientRect();
+    const y = e.clientY - rect.top;
+    const half = rect.height / 2;
+    const top = y < half;
+
+    // TODO: implement top/bottom half click handling
+
     if (FEATURES.DISABLE_TEETH && e.ctrlKey || e.metaKey) {
       onToggle(number);
     } else {
