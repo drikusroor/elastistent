@@ -74,7 +74,7 @@ const getToothColor = (number: number, selected: boolean, disabled: boolean) => 
 
 const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, setRef, isMirrorView }: ToothMemo & { isMirrorView: boolean }) => {
   const handleClick = (e: React.MouseEvent) => {
-    if (e.ctrlKey || e.metaKey) {
+    if (FEATURES.DISABLE_TEETH && e.ctrlKey || e.metaKey) {
       onToggle(number);
     } else {
       onClick(number);
