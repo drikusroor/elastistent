@@ -14,14 +14,15 @@ const teethLayout = [
 ];
 
 const ELASTIC_TYPES = [
-  { id: 0, name: 'Rabbit', color: '#FF5555', thickness: 3, icon: '🐰' },
-  { id: 1, name: 'Chipmunk', color: '#5555CC', thickness: 4, icon: '🐿️' },
-  { id: 2, name: 'Rox', color: '#44DD44', thickness: 5, icon: '🦊' },
+  { id: 0, name: 'Rabbit', color: '#FF5555', thickness: 3, icon: '🐰', time: '24h' },
+  { id: 1, name: 'Chipmunk', color: '#5555CC', thickness: 4, icon: '🐿️', time: 'daytime' },
+  { id: 2, name: 'Fox', color: '#44DD44', thickness: 5, icon: '🦊', time: 'nighttime' },
 ];
 
 type Elastic = {
   teeth: number[];
   type: number; // Using numeric ID now
+  time: string; // Time-based setting
 };
 
 type ToothRef = {
@@ -34,6 +35,7 @@ const ElasticPlacer = () => {
   const [elastics, setElastics] = useState<Elastic[]>([]);
   const [currentElastic, setCurrentElastic] = useState<number[]>([]);
   const [currentElasticType, setCurrentElasticType] = useState<number>(ELASTIC_TYPES[0].id);
+  const [currentElasticTime, setCurrentElasticTime] = useState<string>('24h');
   const [shareUrl, setShareUrl] = useState('');
   const [disabledTeeth, setDisabledTeeth] = useState<number[]>([]);
   const [onHoverListItem, setOnHoverListItem] = useState<number | null>(null);
@@ -141,10 +143,10 @@ const ElasticPlacer = () => {
 
   const addElastic = useCallback(() => {
     if (currentElastic.length > 1) {
-      setElastics(prev => [...prev, { teeth: currentElastic, type: currentElasticType }]);
+      setElastics(prev => [...prev, { teeth: currentElastic, type: currentElasticType, time: currentElasticTime }]);
       setCurrentElastic([]);
     }
-  }, [currentElastic, currentElasticType]);
+  }, [currentElastic, currentElasticType, currentElasticTime]);
 
   const removeElastic = useCallback((index: number) => {
     setElastics(prev => prev.filter((_, i) => i !== index));
@@ -380,6 +382,21 @@ const ElasticPlacer = () => {
             ))}
           </div>
 
+          {/* Time-based selection */}
+          {FEATURES.TIME_BASED_ELASTICS && (
+            <div className="flex gap-2">
+              {['24h', 'daytime', 'nighttime'].map((time) => (
+                <button
+                  key={time}
+                  onClick={() => setCurrentElasticTime(time)}
+                  className={`px-4 py-2 rounded border ${currentElasticTime === time ? 'bg-blue-500 text-white' : 'bg-white text-black'}`}
+                >
+                  {t(`elastics.timeOption.${time}`)}
+                </button>
+              ))}
+            </div>
+          )}
+
           <button
             onClick={addElastic}
             className={`w-full bg-jort text-white px-4 py-2 rounded flex flex-row items-center gap-2 ${currentElastic.length < 2 ? 'opacity-30 cursor-not-allowed' : ''}`}
@@ -440,6 +457,11 @@ const ElasticPlacer = () => {
                       />
                     </svg>
                   </span>
+                  {FEATURES.TIME_BASED_ELASTICS && (
+                    <span className="ml-2 text-sm text-gray-600" title={t(`elastics.timeOption.${elastic.time}`)}>
+                      { elastic.time === '24h' ? '🏪' : elastic.time === 'daytime' ? '☀️' : '😴' }
+                    </span>
+                  )}
                 </span>
                 <button
                   title={t('buttons.removeElastic')}
