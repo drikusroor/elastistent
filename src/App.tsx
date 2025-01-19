@@ -425,7 +425,7 @@ const ElasticPlacer = () => {
           >
             <svg
               ref={svgRef}
-              className="absolute inset-0 pointer-events-none z-10 drop-shadow max-w-4xl"
+              className="zabsolute inset-0 pointer-events-none z-10 drop-shadow max-w-4xl overflow-visible"
               style={{ width: "100%", height: "100%" }}
             ></svg>
             {teethLayout.map((row, rowIndex) => (

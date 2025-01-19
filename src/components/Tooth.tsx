@@ -11,44 +11,49 @@ type TeethMofidication = {
   };
 }
 
-// Molars should be slightly wider than premolars
-// Canines should be slightly pointier
-// Incisors should be slightly smaller
-const teethModifications: TeethMofidication = {
-  18: { className: 'scale-x-110 -translate-y-6', },
-  17: { className: 'scale-x-110 -translate-y-4', },
-  16: { className: 'scale-x-110 -translate-y-3', },
-  15: { className: 'scale-x-110 -translate-y-2', },
-  14: { className: 'scale-x-110 -translate-y-1', },
-  13: { className: '', },
-  12: { className: '', },
-  11: { className: '', },
-  21: { className: '', },
-  22: { className: '', },
-  23: { className: '', },
-  24: { className: 'scale-x-110 -translate-y-1', },
-  25: { className: 'scale-x-110 -translate-y-2', },
-  26: { className: 'scale-x-110 -translate-y-3', },
-  27: { className: 'scale-x-110 -translate-y-4', },
-  28: { className: 'scale-x-110 -translate-y-6', },
+const teethModifications: Record<number, { className: string }> = {
+  // ------------------ TOP ROW ------------------
+  // Quadrant 1 (18 -> 11) - Right side (patient's perspective)
+  18: { className: 'scale-x-110 -rotate-90 translate-y-0' },
+  17: { className: 'scale-x-110 -rotate-[80deg] -translate-y-4' },
+  16: { className: 'scale-x-110 -rotate-[70deg] -translate-y-8' },
+  15: { className: 'scale-x-105 -rotate-[60deg]  -translate-y-12' },
+  14: { className: 'scale-x-105 -rotate-[50deg]  -translate-y-16' },
+  13: { className: 'scale-x-95  -rotate-2  -translate-y-20' }, // pointier canine
+  12: { className: 'scale-x-90  -rotate-1  -translate-y-24' }, // smaller incisor
+  11: { className: 'scale-x-90  rotate-0   -translate-y-28' }, // top center, highest
 
-  48: { className: 'scale-x-110 -translate-y-6', },
-  47: { className: 'scale-x-110 -translate-y-4', },
-  46: { className: 'scale-x-110 -translate-y-3', },
-  45: { className: 'scale-x-110 -translate-y-2', },
-  44: { className: 'scale-x-110 -translate-y-1', },
-  43: { className: '', },
-  42: { className: '', },
-  41: { className: '', },
-  31: { className: '', },
-  32: { className: '', },
-  33: { className: '', },
-  34: { className: 'scale-x-110 -translate-y-1', },
-  35: { className: 'scale-x-110 -translate-y-2', },
-  36: { className: 'scale-x-110 -translate-y-3', },
-  37: { className: 'scale-x-110 -translate-y-4', },
-  38: { className: 'scale-x-110 -translate-y-6', },
-}
+  // Quadrant 2 (21 -> 28) - Left side (patient's perspective)
+  21: { className: 'scale-x-90  rotate-0   -translate-y-28' },
+  22: { className: 'scale-x-90  rotate-1   -translate-y-24' },
+  23: { className: 'scale-x-95  rotate-2   -translate-y-20' },
+  24: { className: 'scale-x-105 rotate-[50deg]   -translate-y-16' },
+  25: { className: 'scale-x-105 rotate-[60deg]   -translate-y-12' },
+  26: { className: 'scale-x-110 rotate-[70deg]  -translate-y-8' },
+  27: { className: 'scale-x-110 rotate-[80deg]  -translate-y-4' },
+  28: { className: 'scale-x-110 rotate-90  translate-y-0' },
+
+  // ------------------ BOTTOM ROW ------------------
+  // Quadrant 4 (48 -> 41) - Lower right
+  48: { className: 'scale-x-110 rotate-90  translate-y-0' },
+  47: { className: 'scale-x-110 rotate-[80deg]  translate-y-4' },
+  46: { className: 'scale-x-110 rotate-[70deg]  translate-y-8' },
+  45: { className: 'scale-x-105 rotate-[60deg]  translate-y-12' },
+  44: { className: 'scale-x-105 rotate-[50deg]  translate-y-16' },
+  43: { className: 'scale-x-95  rotate-2   translate-y-20' },
+  42: { className: 'scale-x-90  rotate-1   translate-y-24' },
+  41: { className: 'scale-x-90  rotate-0   translate-y-28' }, // bottom center, lowest
+
+  // Quadrant 3 (31 -> 38) - Lower left
+  31: { className: 'scale-x-90  -rotate-0  translate-y-28' },
+  32: { className: 'scale-x-90  -rotate-1  translate-y-24' },
+  33: { className: 'scale-x-95  -rotate-2  translate-y-20' },
+  34: { className: 'scale-x-105 -rotate-[50deg]  translate-y-16' },
+  35: { className: 'scale-x-105 -rotate-[60deg]  translate-y-12' },
+  36: { className: 'scale-x-110 -rotate-[70deg] translate-y-8' },
+  37: { className: 'scale-x-110 -rotate-[80deg] translate-y-4' },
+  38: { className: 'scale-x-110 -rotate-90 translate-y-0' },
+};
 
 type ToothMemo = {
   number: number;
