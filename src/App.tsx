@@ -14,36 +14,37 @@ const teethLayout = [
 ];
 
 const ELASTIC_TYPES = [
-  {
-    id: 0,
-    name: "Rabbit",
-    color: "#FF5555",
-    thickness: 3,
-    icon: "🐰",
-    time: "24h",
-  },
-  {
-    id: 1,
-    name: "Chipmunk",
-    color: "#5555CC",
-    thickness: 4,
-    icon: "🐿️",
-    time: "daytime",
-  },
-  {
-    id: 2,
-    name: "Fox",
-    color: "#44DD44",
-    thickness: 5,
-    icon: "🦊",
-    time: "nighttime",
-  },
+  { id: 0, name: "Rabbit", color: "#FF5555", thickness: 3, icon: "🐰" },
+  { id: 1, name: "Chipmunk", color: "#5555CC", thickness: 4, icon: "🐿️" },
+  { id: 2, name: "Fox", color: "#44DD44", thickness: 5, icon: "🦊" },
 ];
+
+type TimeType = "a" | "d" | "n";
 
 type Elastic = {
   teeth: number[];
-  type: number; // Using numeric ID now
-  time: string; // Time-based setting
+  type: number;
+
+  /*
+   * Which time of day the elastic should be worn
+   * 24h: 24 hours a day
+   * daytime: only during the day
+   * nighttime: only during the night
+   *   (emojis are used for display)
+   */
+  time: TimeType;
+
+  /*
+   * Placed on the outer side of the teeth or inner side
+   */
+  outer?: boolean;
+};
+
+// Create a mapping for the time options
+const TIME_OPTIONS: { [key: string]: string } = {
+  a: "24h",
+  d: "daytime",
+  n: "nighttime",
 };
 
 type ToothRef = {
@@ -58,7 +59,7 @@ const ElasticPlacer = () => {
   const [currentElasticType, setCurrentElasticType] = useState<number>(
     ELASTIC_TYPES[0].id
   );
-  const [currentElasticTime, setCurrentElasticTime] = useState<string>("24h");
+  const [currentElasticTime, setCurrentElasticTime] = useState<TimeType>("a");
   const [shareUrl, setShareUrl] = useState("");
   const [disabledTeeth, setDisabledTeeth] = useState<number[]>([]);
   const [onHoverListItem, setOnHoverListItem] = useState<number | null>(null);
@@ -179,14 +180,13 @@ const ElasticPlacer = () => {
 
   const addElastic = useCallback(() => {
     if (currentElastic.length > 1) {
-      setElastics((prev) => [
-        ...prev,
-        {
-          teeth: currentElastic,
-          type: currentElasticType,
-          time: currentElasticTime,
-        },
-      ]);
+      const newElastic = {
+        teeth: currentElastic,
+        type: currentElasticType,
+        time: currentElasticTime,
+      };
+
+      setElastics((prev) => [...prev, newElastic]);
       setCurrentElastic([]);
     }
   }, [currentElastic, currentElasticType, currentElasticTime]);
@@ -487,7 +487,7 @@ const ElasticPlacer = () => {
           {/* Time-based selection */}
           {FEATURES.TIME_BASED_ELASTICS && (
             <div className="flex gap-2">
-              {["24h", "daytime", "nighttime"].map((time) => (
+              {Object.keys(TIME_OPTIONS).map((time) => (
                 <button
                   key={time}
                   onClick={() => setCurrentElasticTime(time)}
@@ -497,7 +497,7 @@ const ElasticPlacer = () => {
                       : "bg-white text-black"
                   }`}
                 >
-                  {t(`elastics.timeOption.${time}`)}
+                  {t(`elastics.timeOption.${TIME_OPTIONS[time]}`)}
                 </button>
               ))}
             </div>
@@ -588,9 +588,9 @@ const ElasticPlacer = () => {
                       className="ml-2 text-sm text-gray-600"
                       title={t(`elastics.timeOption.${elastic.time}`)}
                     >
-                      {elastic.time === "24h"
+                      {elastic.time === "a"
                         ? "🏪"
-                        : elastic.time === "daytime"
+                        : elastic.time === "d"
                         ? "☀️"
                         : "😴"}
                     </span>
