@@ -80,6 +80,7 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
     const rect = e.currentTarget.getBoundingClientRect();
     const y = e.clientY - rect.top;
     const half = rect.height / 2;
+    // @ts-ignore
     const _top = y < half;
 
     // TODO: implement top/bottom half click handling
