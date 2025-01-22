@@ -490,7 +490,7 @@ const ElasticPlacer = () => {
               {Object.keys(TIME_OPTIONS).map((time) => (
                 <button
                   key={time}
-                  onClick={() => setCurrentElasticTime(time)}
+                  onClick={() => setCurrentElasticTime(time as TimeType)}
                   className={`px-4 py-2 rounded border ${
                     currentElasticTime === time
                       ? "bg-blue-500 text-white"
