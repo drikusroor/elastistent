@@ -351,74 +351,79 @@ const ElasticPlacer = () => {
 
   return (
     <div className="container mx-auto sm:p-4 md:p-8">
-      <div className="sm:rounded-xl pt-4 sm:p-4 md:p-8 bg-jort drop-shadow-xl">
+      <div className="sm:rounded-xl lg:grid grid-cols-2 pt-4 sm:p-4 md:p-8 bg-jort drop-shadow-xl">
         <h1
           data-testid="title"
-          className="text-2xl font-bold mb-4 text-center text-white uppercase flex items-center justify-center"
+          className="text-2xl col-span-2 font-bold mb-4 text-center text-white uppercase flex items-center justify-center"
         >
           <Logo className="inline-block w-8" />
           {t("title")}
         </h1>
 
-        {/* View Toggle */}
-        {FEATURES.MIRROR_VIEW && (
-          <ViewToggle
-            isMirrorView={isMirrorView}
-            onToggle={() => setIsMirrorView((prev) => !prev)}
-          />
-        )}
+        <div>
 
-        {/* Legend for Teeth */}
-        {(FEATURES.HIGHLIGHT_SPECIAL_TEETH || FEATURES.DISABLE_TEETH) && (
-          <div className="bg-white p-4 rounded-lg mb-4 flex flex-wrap gap-4 justify-center">
-            {FEATURES.HIGHLIGHT_SPECIAL_TEETH && (
-              <>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-green-200 rounded"></div>
-                  <span>{t("legend.middleIncisors")}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <div className="w-4 h-4 bg-purple-200 rounded"></div>
-                  <span>{t("legend.canines")}</span>
-                </div>
-              </>
-            )}
-            {FEATURES.DISABLE_TEETH && (
-              <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-gray-300 rounded"></div>
-                <span>{t("legend.disabledTeeth")}</span>
-              </div>
-            )}
-          </div>
-        )}
+          {/* View Toggle */}
+          {FEATURES.MIRROR_VIEW && (
+            <ViewToggle
+              isMirrorView={isMirrorView}
+              onToggle={() => setIsMirrorView((prev) => !prev)}
+            />
+          )}
 
-        {/* Legend for Elastics */}
-        <div className="bg-white p-4 rounded-lg mb-4">
-          <div className="flex flex-wrap gap-4">
-            {ELASTIC_TYPES.map((etype) => (
-              <div
-                key={etype.id}
-                className="flex items-center gap-2 drop-shadow-xs"
-              >
-                <svg width="30" height="10">
-                  <line
-                    x1="0"
-                    y1="5"
-                    x2="30"
-                    y2="5"
-                    stroke={etype.color}
-                    strokeWidth={etype.thickness}
-                  />
-                </svg>
-                <span>{etype.icon}</span>
-                <span className="text-xs sm:text-base">
-                  {t("legend.elasticType", { type: etype.name })}
-                </span>
-              </div>
-            ))}
+          {/* Legend for Teeth */}
+          {(FEATURES.HIGHLIGHT_SPECIAL_TEETH || FEATURES.DISABLE_TEETH) && (
+            <div className="bg-white p-4 rounded-lg mb-4 flex flex-wrap gap-4 justify-center">
+              {FEATURES.HIGHLIGHT_SPECIAL_TEETH && (
+                <>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 bg-green-200 rounded"></div>
+                    <span>{t("legend.middleIncisors")}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <div className="w-4 h-4 bg-purple-200 rounded"></div>
+                    <span>{t("legend.canines")}</span>
+                  </div>
+                </>
+              )}
+              {FEATURES.DISABLE_TEETH && (
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-gray-300 rounded"></div>
+                  <span>{t("legend.disabledTeeth")}</span>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Legend for Elastics */}
+          <div className="bg-white p-4 rounded-lg mb-4">
+            <div className="flex flex-wrap gap-4">
+              {ELASTIC_TYPES.map((etype) => (
+                <div
+                  key={etype.id}
+                  className="flex items-center gap-2 drop-shadow-xs"
+                >
+                  <svg width="30" height="10">
+                    <line
+                      x1="0"
+                      y1="5"
+                      x2="30"
+                      y2="5"
+                      stroke={etype.color}
+                      strokeWidth={etype.thickness}
+                    />
+                  </svg>
+                  <span>{etype.icon}</span>
+                  <span className="text-xs sm:text-base">
+                    {t("legend.elasticType", { type: etype.name })}
+                  </span>
+                </div>
+              ))}
+            </div>
           </div>
+
         </div>
 
+        {/* Teeth Grid */}
         <div className="max-w-screen mx-auto bg-blue-200 overflow-hidden sm:rounded-full py-8 px-4 max-w-md overflow-x-auto">
           <div
             className={`grid grid-cols-2 relative -my-16 ${isMirrorView ? "transform scale-x-[-1]" : ""
