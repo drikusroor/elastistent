@@ -7,11 +7,14 @@ import Tooth from "./components/Tooth";
 import { FEATURES } from "./config";
 import LanguageButtons from "./components/LanguageButtons";
 import Logo from "./components/Logo";
+import { classNames } from "./util/class-names";
 
-const teethLayout = [
-  [18, 17, 16, 15, 14, 13, 12, 11, 21, 22, 23, 24, 25, 26, 27, 28],
-  [48, 47, 46, 45, 44, 43, 42, 41, 31, 32, 33, 34, 35, 36, 37, 38],
-];
+const teethLayout = {
+  topLeft: [18, 17, 16, 15, 14, 13, 12, 11],
+  topRight: [21, 22, 23, 24, 25, 26, 27, 28],
+  bottomLeft: [48, 47, 46, 45, 44, 43, 42, 41],
+  bottomRight: [31, 32, 33, 34, 35, 36, 37, 38],
+}
 
 const ELASTIC_TYPES = [
   { id: 0, name: "Rabbit", color: "#FF5555", thickness: 3, icon: "🐰" },
@@ -123,9 +126,8 @@ const ElasticPlacer = () => {
       if (FEATURES.MIRROR_VIEW) {
         params.set("m", isMirrorView ? "1" : "0");
       }
-      const newUrl = `${window.location.origin}${window.location.pathname}${
-        params.toString() ? "?" + params.toString() : ""
-      }`;
+      const newUrl = `${window.location.origin}${window.location.pathname}${params.toString() ? "?" + params.toString() : ""
+        }`;
       window.history.pushState({ path: newUrl }, "", newUrl);
       setShareUrl(newUrl);
     }
@@ -417,36 +419,84 @@ const ElasticPlacer = () => {
           </div>
         </div>
 
-        <div className="max-w-screen mx-auto bg-blue-200 sm:rounded-2xl py-8 sm:px-4 max-w-4xl overflow-x-auto">
+        <div className="max-w-screen mx-auto bg-blue-200 overflow-hidden sm:rounded-full py-8 px-4 max-w-md overflow-x-auto">
           <div
-            className={`relative min-w-[580px] px-2 translate-y-3 ${
-              isMirrorView ? "transform scale-x-[-1]" : ""
-            }`}
+            className={`grid grid-cols-2 relative -my-16 ${isMirrorView ? "transform scale-x-[-1]" : ""
+              }`}
           >
             <svg
               ref={svgRef}
               className="absolute inset-0 pointer-events-none z-10 drop-shadow max-w-4xl"
               style={{ width: "100%", height: "100%" }}
             ></svg>
-            {teethLayout.map((row, rowIndex) => (
-              <div key={rowIndex} className="flex justify-center flex-1 w-full">
-                {row.map((tooth) => (
-                  <Tooth
-                    key={tooth}
-                    number={tooth}
-                    row={rowIndex}
-                    onClick={handleToothClick}
-                    onToggle={handleToothToggle}
-                    selected={currentElastic.includes(tooth)}
-                    disabled={
-                      FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
-                    }
-                    setRef={setToothRef}
-                    isMirrorView={isMirrorView}
-                  />
-                ))}
-              </div>
-            ))}
+            <div className="flex flex-col-reverse items-start">
+              {teethLayout.topLeft.map((tooth) => (
+                <Tooth
+                  key={tooth}
+                  number={tooth}
+                  row={0}
+                  onClick={handleToothClick}
+                  onToggle={handleToothToggle}
+                  selected={currentElastic.includes(tooth)}
+                  disabled={
+                    FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
+                  }
+                  setRef={setToothRef}
+                  isMirrorView={isMirrorView}
+                />
+              ))}
+            </div>
+            <div className="flex flex-col items-end">
+              {teethLayout.topRight.map((tooth) => (
+                <Tooth
+                  key={tooth}
+                  number={tooth}
+                  row={0}
+                  onClick={handleToothClick}
+                  onToggle={handleToothToggle}
+                  selected={currentElastic.includes(tooth)}
+                  disabled={
+                    FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
+                  }
+                  setRef={setToothRef}
+                  isMirrorView={isMirrorView}
+                />
+              ))}
+            </div>
+            <div className="flex flex-col items-start">
+              {teethLayout.bottomLeft.map((tooth) => (
+                <Tooth
+                  key={tooth}
+                  number={tooth}
+                  row={1}
+                  onClick={handleToothClick}
+                  onToggle={handleToothToggle}
+                  selected={currentElastic.includes(tooth)}
+                  disabled={
+                    FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
+                  }
+                  setRef={setToothRef}
+                  isMirrorView={isMirrorView}
+                />
+              ))}
+            </div>
+            <div className="flex flex-col-reverse items-end">
+              {teethLayout.bottomRight.map((tooth) => (
+                <Tooth
+                  key={tooth}
+                  number={tooth}
+                  row={1}
+                  onClick={handleToothClick}
+                  onToggle={handleToothToggle}
+                  selected={currentElastic.includes(tooth)}
+                  disabled={
+                    FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
+                  }
+                  setRef={setToothRef}
+                  isMirrorView={isMirrorView}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </div>
@@ -465,11 +515,10 @@ const ElasticPlacer = () => {
                     : { borderColor: etype.color }
                 }
                 className={`px-4 py-2 rounded border
-          ${
-            currentElasticType === etype.id
-              ? "text-white border-black"
-              : "bg-white text-black"
-          }`}
+          ${currentElasticType === etype.id
+                    ? "text-white border-black"
+                    : "bg-white text-black"
+                  }`}
                 title={t("elastics.typeOption", { type: etype.name })}
               >
                 {etype.icon && (
@@ -491,11 +540,10 @@ const ElasticPlacer = () => {
                 <button
                   key={time}
                   onClick={() => setCurrentElasticTime(time as TimeType)}
-                  className={`px-4 py-2 rounded border ${
-                    currentElasticTime === time
-                      ? "bg-blue-500 text-white"
-                      : "bg-white text-black"
-                  }`}
+                  className={`px-4 py-2 rounded border ${currentElasticTime === time
+                    ? "bg-blue-500 text-white"
+                    : "bg-white text-black"
+                    }`}
                 >
                   {t(`elastics.timeOption.${TIME_OPTIONS[time]}`)}
                 </button>
@@ -505,9 +553,8 @@ const ElasticPlacer = () => {
 
           <button
             onClick={addElastic}
-            className={`w-full bg-jort text-white px-4 py-2 rounded flex flex-row items-center gap-2 ${
-              currentElastic.length < 2 ? "opacity-30 cursor-not-allowed" : ""
-            }`}
+            className={`w-full bg-jort text-white px-4 py-2 rounded flex flex-row items-center gap-2 ${currentElastic.length < 2 ? "opacity-30 cursor-not-allowed" : ""
+              }`}
             disabled={currentElastic.length < 2}
             title={
               currentElastic.length < 2
@@ -552,9 +599,8 @@ const ElasticPlacer = () => {
             return (
               <div
                 key={index}
-                className={`flex items-center justify-between my-2 p-1 rounded w-full ${
-                  onHoverListItem === index ? "bg-gray-200" : ""
-                }`}
+                className={`flex items-center justify-between my-2 p-1 rounded w-full ${onHoverListItem === index ? "bg-gray-200" : ""
+                  }`}
                 onMouseEnter={() => setOnHoverListItem(index)}
                 onMouseLeave={() => setOnHoverListItem(null)}
               >
@@ -591,8 +637,8 @@ const ElasticPlacer = () => {
                       {elastic.time === "a"
                         ? "🏪"
                         : elastic.time === "d"
-                        ? "☀️"
-                        : "😴"}
+                          ? "☀️"
+                          : "😴"}
                     </span>
                   )}
                 </span>

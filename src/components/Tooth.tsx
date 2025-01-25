@@ -1,6 +1,7 @@
 import React from "react";
 import { FEATURES } from "../config";
 import ToothIcon, { TOOTH_TYPE_MAP } from "./ToothIcon";
+import { classNames } from "../util/class-names";
 
 const middleIncisors = [11, 21, 31, 41];
 const canines = [13, 23, 33, 43];
@@ -8,6 +9,8 @@ const canines = [13, 23, 33, 43];
 type TeethMofidication = {
   [key: number]: {
     className?: string;
+    rotation?: string;
+    counterRotation?: string;
   };
 }
 
@@ -15,39 +18,39 @@ type TeethMofidication = {
 // Canines should be slightly pointier
 // Incisors should be slightly smaller
 const teethModifications: TeethMofidication = {
-  18: { className: 'translate-y-0 scale-x-110', },
-  17: { className: 'translate-y-0 scale-x-110', },
-  16: { className: 'translate-y-0 scale-x-110', },
-  15: { className: 'translate-y-0 scale-x-110', },
-  14: { className: 'translate-y-0 scale-x-110', },
-  13: { className: 'translate-y-0', },
-  12: { className: 'translate-y-0', },
-  11: { className: 'translate-y-0', },
-  21: { className: 'translate-y-0', },
-  22: { className: 'translate-y-0', },
-  23: { className: 'translate-y-0', },
-  24: { className: 'translate-y-0 scale-x-110', },
-  25: { className: 'translate-y-0 scale-x-110', },
-  26: { className: 'translate-y-0 scale-x-110', },
-  27: { className: 'translate-y-0 scale-x-110', },
-  28: { className: 'translate-y-0 scale-x-110', },
+  18: { className: 'translate-y-0', rotation: '-rotate-90', counterRotation: 'rotate-90' },
+  17: { className: 'translate-y-0', rotation: '-rotate-90', counterRotation: 'rotate-90' },
+  16: { className: 'translate-y-0 ml-2', rotation: '-rotate-[75deg]', counterRotation: 'rotate-[75deg]' },
+  15: { className: 'translate-y-0 ml-4', rotation: '-rotate-[60deg]', counterRotation: 'rotate-[60deg]' },
+  14: { className: 'translate-y-0 ml-6', rotation: '-rotate-[60deg]', counterRotation: 'rotate-[60deg]' },
+  13: { className: 'translate-y-0 ml-10', rotation: '-rotate-45', counterRotation: 'rotate-45' },
+  12: { className: 'translate-y-4 ml-22', rotation: '-rotate-[30deg]', counterRotation: 'rotate-[30deg]' },
+  11: { className: 'translate-y-16 ml-37', rotation: '-rotate-[10deg]', counterRotation: 'rotate-[10deg]' },
+  21: { className: 'translate-y-16 mr-37', rotation: 'rotate-[10deg]', counterRotation: '-rotate-[10deg]' },
+  22: { className: 'translate-y-4 mr-22', rotation: 'rotate-[30deg]', counterRotation: '-rotate-[30deg]' },
+  23: { className: 'translate-y-0 mr-10', rotation: 'rotate-45', counterRotation: '-rotate-45' },
+  24: { className: 'translate-y-0 mr-6', rotation: 'rotate-[60deg]', counterRotation: '-rotate-[60deg]' },
+  25: { className: 'translate-y-0 mr-4', rotation: 'rotate-[60deg]', counterRotation: '-rotate-[60deg]' },
+  26: { className: 'translate-y-0 mr-2', rotation: 'rotate-[75deg]', counterRotation: '-rotate-[75deg]' },
+  27: { className: 'translate-y-0', rotation: 'rotate-90', counterRotation: '-rotate-90' },
+  28: { className: 'translate-y-0', rotation: 'rotate-90', counterRotation: '-rotate-90' },
 
-  48: { className: 'translate-y-0 scale-x-110', },
-  47: { className: 'translate-y-0 scale-x-110', },
-  46: { className: 'translate-y-0 scale-x-110', },
-  45: { className: 'translate-y-0 scale-x-110', },
-  44: { className: 'translate-y-0 scale-x-110', },
-  43: { className: 'translate-y-0', },
-  42: { className: 'translate-y-0', },
-  41: { className: 'translate-y-0', },
-  31: { className: 'translate-y-0', },
-  32: { className: 'translate-y-0', },
-  33: { className: 'translate-y-0', },
-  34: { className: 'translate-y-0 scale-x-110', },
-  35: { className: 'translate-y-0 scale-x-110', },
-  36: { className: 'translate-y-0 scale-x-110', },
-  37: { className: 'translate-y-0 scale-x-110', },
-  38: { className: 'translate-y-0 scale-x-110', },
+  48: { className: '-translate-y-0', rotation: '-rotate-90', counterRotation: 'rotate-90' },
+  47: { className: 'translate-y-0', rotation: '-rotate-90', counterRotation: 'rotate-90' },
+  46: { className: 'translate-y-0 ml-2', rotation: '-rotate-[105deg]', counterRotation: 'rotate-[105deg]' },
+  45: { className: 'translate-y-0 ml-4', rotation: '-rotate-[120deg]', counterRotation: 'rotate-[120deg]' },
+  44: { className: 'translate-y-0 ml-6', rotation: '-rotate-[120deg]', counterRotation: 'rotate-[120deg]' },
+  43: { className: 'translate-y-0 ml-10', rotation: '-rotate-[135deg]', counterRotation: 'rotate-[135deg]' },
+  42: { className: '-translate-y-4 ml-20', rotation: '-rotate-[150deg]', counterRotation: 'rotate-[150deg]' },
+  41: { className: '-translate-y-16 ml-35', rotation: '-rotate-[170deg]', counterRotation: 'rotate-[170deg]' },
+  31: { className: '-translate-y-16 mr-35', rotation: 'rotate-[170deg]', counterRotation: '-rotate-[170deg]' },
+  32: { className: '-translate-y-4 mr-20', rotation: 'rotate-[150deg]', counterRotation: '-rotate-[150deg]' },
+  33: { className: 'translate-y-0 mr-10', rotation: 'rotate-[135deg]', counterRotation: '-rotate-[135deg]' },
+  34: { className: 'translate-y-0 mr-6', rotation: 'rotate-[120deg]', counterRotation: '-rotate-[120deg]' },
+  35: { className: 'translate-y-0 mr-4', rotation: 'rotate-[120deg]', counterRotation: '-rotate-[120deg]' },
+  36: { className: 'translate-y-0 mr-2', rotation: 'rotate-[105deg]', counterRotation: '-rotate-[105deg]' },
+  37: { className: 'translate-y-0', rotation: 'rotate-90', counterRotation: '-rotate-90' },
+  38: { className: 'translate-y-0', rotation: 'rotate-90', counterRotation: '-rotate-90' },
 }
 
 type ToothMemo = {
@@ -70,8 +73,6 @@ const getToothColor = (number: number, selected: boolean, disabled: boolean) => 
   return 'bg-yellow-50';
 };
 
-
-
 const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, setRef, isMirrorView }: ToothMemo & { isMirrorView: boolean }) => {
   const handleClick = (e: React.MouseEvent) => {
 
@@ -93,16 +94,17 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
   };
 
   const toothType = TOOTH_TYPE_MAP[number];
+  const teethModification = teethModifications[number];
 
   return (
     <button
       ref={(el: HTMLButtonElement) => setRef(number, el)}
       onClick={handleClick}
-      className={`min-w-6 w-10 h-14 rounded-full m-1 flex flex-col items-center justify-center text-xs drop-shadow 
+      className={`w-14 h-14 rounded-full m-0.5 flex flex-col items-center justify-center text-xs drop-shadow 
           ${getToothColor(number, selected, disabled)}
-          ${teethModifications[number]?.className || ''}
-          `}
-    >
+          ${teethModification?.className || ''}
+          ${teethModification?.rotation || ''}
+          `}>
       {FEATURES.TOOTH_ICONS && (
         <div className="h-8 w-8" style={{ transform: isMirrorView ? 'scale(-1, 1)' : undefined }}>
           <ToothIcon
@@ -111,10 +113,10 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
           />
         </div>
       )}
-      < span className={isMirrorView ? 'transform scale-x-[-1]' : ''}>
+      <span className={classNames(isMirrorView ? 'transform scale-x-[-1]' : '', teethModification?.counterRotation || '')}>
         {number}
       </span>
-    </button >
+    </button>
   );
 });
 
