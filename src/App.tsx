@@ -3,11 +3,10 @@ import { X, PlusCircle, Share2, Redo2 } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
 import ViewToggle from "./components/ViewToggle";
 import { useTranslation } from "react-i18next";
-import Tooth from "./components/Tooth";
 import { FEATURES } from "./config";
 import LanguageButtons from "./components/LanguageButtons";
 import Logo from "./components/Logo";
-import { classNames } from "./util/class-names";
+import { TeethGrid } from "./components/TeethGrid";
 
 const teethLayout = {
   topLeft: [18, 17, 16, 15, 14, 13, 12, 11],
@@ -424,86 +423,7 @@ const ElasticPlacer = () => {
         </div>
 
         {/* Teeth Grid */}
-        <div className="max-w-screen mx-auto bg-blue-200 overflow-hidden sm:rounded-full py-8 px-4 max-w-md overflow-x-auto">
-          <div
-            className={`grid grid-cols-2 relative -my-16 ${isMirrorView ? "transform scale-x-[-1]" : ""
-              }`}
-          >
-            <svg
-              ref={svgRef}
-              className="absolute inset-0 pointer-events-none z-10 drop-shadow max-w-4xl"
-              style={{ width: "100%", height: "100%" }}
-            ></svg>
-            <div className="flex flex-col-reverse items-start">
-              {teethLayout.topLeft.map((tooth) => (
-                <Tooth
-                  key={tooth}
-                  number={tooth}
-                  row={0}
-                  onClick={handleToothClick}
-                  onToggle={handleToothToggle}
-                  selected={currentElastic.includes(tooth)}
-                  disabled={
-                    FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
-                  }
-                  setRef={setToothRef}
-                  isMirrorView={isMirrorView}
-                />
-              ))}
-            </div>
-            <div className="flex flex-col items-end">
-              {teethLayout.topRight.map((tooth) => (
-                <Tooth
-                  key={tooth}
-                  number={tooth}
-                  row={0}
-                  onClick={handleToothClick}
-                  onToggle={handleToothToggle}
-                  selected={currentElastic.includes(tooth)}
-                  disabled={
-                    FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
-                  }
-                  setRef={setToothRef}
-                  isMirrorView={isMirrorView}
-                />
-              ))}
-            </div>
-            <div className="flex flex-col items-start">
-              {teethLayout.bottomLeft.map((tooth) => (
-                <Tooth
-                  key={tooth}
-                  number={tooth}
-                  row={1}
-                  onClick={handleToothClick}
-                  onToggle={handleToothToggle}
-                  selected={currentElastic.includes(tooth)}
-                  disabled={
-                    FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
-                  }
-                  setRef={setToothRef}
-                  isMirrorView={isMirrorView}
-                />
-              ))}
-            </div>
-            <div className="flex flex-col-reverse items-end">
-              {teethLayout.bottomRight.map((tooth) => (
-                <Tooth
-                  key={tooth}
-                  number={tooth}
-                  row={1}
-                  onClick={handleToothClick}
-                  onToggle={handleToothToggle}
-                  selected={currentElastic.includes(tooth)}
-                  disabled={
-                    FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
-                  }
-                  setRef={setToothRef}
-                  isMirrorView={isMirrorView}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
+        <TeethGrid svgRef={svgRef} teethLayout={teethLayout} currentElastic={currentElastic} disabledTeeth={disabledTeeth} handleToothClick={handleToothClick} handleToothToggle={handleToothToggle} setToothRef={setToothRef} isMirrorView={isMirrorView} />
       </div>
 
       <div className="mx-auto mt-4 flex flex-col sm:flex-row justify-center md:justify-between items-center sm:items-start gap-4 md:min-w-72 md:p-8">
