@@ -98,7 +98,7 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
     <button
       ref={(el: HTMLButtonElement) => setRef(number, el)}
       onClick={handleClick}
-      className={`min-w-6 w-10 h-14 rounded m-1 flex flex-col items-center justify-center text-xs drop-shadow 
+      className={`min-w-6 w-10 h-14 rounded-full m-1 flex flex-col items-center justify-center text-xs drop-shadow 
           ${getToothColor(number, selected, disabled)}
           ${teethModifications[number]?.className || ''}
           `}
