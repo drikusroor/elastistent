@@ -7,6 +7,7 @@ import { FEATURES } from "./config";
 import LanguageButtons from "./components/LanguageButtons";
 import Logo from "./components/Logo";
 import { TeethGrid } from "./components/TeethGrid";
+import { Elastic, ElasticPoint, TimeType } from "./types";
 
 const teethLayout = {
   topLeft: [18, 17, 16, 15, 14, 13, 12, 11],
@@ -20,27 +21,6 @@ const ELASTIC_TYPES = [
   { id: 1, name: "Chipmunk", color: "#5555CC", thickness: 4, icon: "🐿️" },
   { id: 2, name: "Fox", color: "#44DD44", thickness: 5, icon: "🦊" },
 ];
-
-type TimeType = "a" | "d" | "n";
-
-type Elastic = {
-  teeth: number[];
-  type: number;
-
-  /*
-   * Which time of day the elastic should be worn
-   * 24h: 24 hours a day
-   * daytime: only during the day
-   * nighttime: only during the night
-   *   (emojis are used for display)
-   */
-  time: TimeType;
-
-  /*
-   * Placed on the outer side of the teeth or inner side
-   */
-  outer?: boolean;
-};
 
 // Create a mapping for the time options
 const TIME_OPTIONS: { [key: string]: string } = {
@@ -57,7 +37,7 @@ const ElasticPlacer = () => {
   const { t } = useTranslation();
   const [isMirrorView, setIsMirrorView] = useState(false);
   const [elastics, setElastics] = useState<Elastic[]>([]);
-  const [currentElastic, setCurrentElastic] = useState<number[]>([]);
+  const [currentElastic, setCurrentElastic] = useState<ElasticPoint[]>([]);
   const [currentElasticType, setCurrentElasticType] = useState<number>(
     ELASTIC_TYPES[0].id
   );
@@ -143,13 +123,13 @@ const ElasticPlacer = () => {
 
   const toothAlreadyInElastic = useCallback(
     (toothNumber: number) => {
-      return elastics.some((elastic) => elastic.teeth.includes(toothNumber));
+      return elastics.some((elastic) => elastic.teeth.some(t => t.tooth === toothNumber));
     },
     [elastics]
   );
 
   const handleToothClick = useCallback(
-    (number: number) => {
+    (number: number, outside: boolean) => {
       if (
         !FEATURES.ALLOW_MULTIPLE_ELASTICS_PER_TOOTH &&
         toothAlreadyInElastic(number)
@@ -158,11 +138,12 @@ const ElasticPlacer = () => {
       }
 
       if (!FEATURES.DISABLE_TEETH || !disabledTeeth.includes(number)) {
-        setCurrentElastic((prev) =>
-          prev.includes(number)
-            ? prev.filter((n) => n !== number)
-            : [...prev, number]
-        );
+        setCurrentElastic((prev) => {
+          const newElastic = { tooth: number, outside };
+          return prev.some((t) => t.tooth === number)
+            ? prev.filter((t) => t.tooth !== number)
+            : [...prev, newElastic];
+        });
       }
     },
     [disabledTeeth, toothAlreadyInElastic]
@@ -175,7 +156,7 @@ const ElasticPlacer = () => {
           ? prev.filter((n) => n !== number)
           : [...prev, number]
       );
-      setCurrentElastic((prev) => prev.filter((n) => n !== number));
+      setCurrentElastic((prev) => prev.filter((n) => n.tooth !== number));
     }
   }, []);
 
@@ -209,8 +190,9 @@ const ElasticPlacer = () => {
     setShareUrl(window.location.origin + window.location.pathname);
   }, []);
 
-  const setToothRef = useCallback((number: number, ref: HTMLButtonElement) => {
-    toothRefs.current[number] = ref;
+  const setToothRef = useCallback((number: number, outside: boolean, ref: HTMLButtonElement) => {
+    const toothRefKey = outside ? number * -1 : number;
+    toothRefs.current[toothRefKey] = ref;
   }, []);
 
   const drawElastics = useCallback(() => {
@@ -231,8 +213,9 @@ const ElasticPlacer = () => {
         ELASTIC_TYPES.find((et) => et.id === elastic.type) || ELASTIC_TYPES[0];
       const svgRect = svgRef.current.getBoundingClientRect();
       const points = elastic.teeth
-        .map((toothNumber) => {
-          const rect = toothRefs.current[toothNumber]?.getBoundingClientRect();
+        .map((elasticPoint) => {
+          const toothRefKey = elasticPoint.outside ? elasticPoint.tooth * -1 : elasticPoint.tooth;
+          const rect = toothRefs.current[toothRefKey]?.getBoundingClientRect();
           if (!rect) return null;
 
           const baseX = rect.left - svgRect.left + rect.width / 2;
@@ -532,7 +515,7 @@ const ElasticPlacer = () => {
                 <span className="mr-2">
                   {t("elastics.elastic", {
                     number: index + 1,
-                    teeth: elastic.teeth.join(" → "),
+                    teeth: elastic.teeth.map((t) => t.tooth).join(" → "),
                   })}
                   &nbsp;-{" "}
                   {t("elastics.elasticTypeDisplay", { type: etype.name })}&nbsp;

@@ -53,11 +53,11 @@ const teethModifications: TeethMofidication = {
 type ToothMemo = {
   number: number;
   row: number;
-  onClick: (number: number) => void;
+  onClick: (number: number, outside: boolean) => void;
   onToggle: (number: number) => void;
   selected: boolean;
   disabled: boolean;
-  setRef: (number: number, ref: HTMLButtonElement) => void;
+  setRef: (number: number, outside: boolean, ref: HTMLButtonElement) => void;
 }
 
 const getToothColor = (number: number, selected: boolean, disabled: boolean) => {
@@ -81,22 +81,16 @@ const getToothSideColor = (number: number, selected: boolean, disabled: boolean)
 };
 
 const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, setRef, isMirrorView }: ToothMemo & { isMirrorView: boolean }) => {
-  const handleClick = (e: React.MouseEvent) => {
 
-    // get click location on the tooth (y coordinate is most important)
-    // we want to know if the click was on the top or bottom half of the tooth
-    const rect = e.currentTarget.getBoundingClientRect();
-    const y = e.clientY - rect.top;
-    const half = rect.height / 2;
-    // @ts-ignore
-    const _top = y < half;
+  const handleClick = (e: React.MouseEvent, outside: boolean) => {
 
-    // TODO: implement top/bottom half click handling
+    // Set ref based on the element clicked
+    setRef(number, outside, e.currentTarget as HTMLButtonElement);
 
     if (FEATURES.DISABLE_TEETH && e.ctrlKey || e.metaKey) {
       onToggle(number);
     } else {
-      onClick(number);
+      onClick(number, outside);
     }
   };
 
@@ -130,8 +124,8 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
           getToothSideColor(number, selected, disabled)
         )}
         style={{ top: 0, left: 0 }}
-        ref={(el: HTMLButtonElement) => setRef(number, el)}
-        onClick={handleClick}
+        ref={(el: HTMLButtonElement) => setRef(number, true, el)}
+        onClick={(e) => handleClick(e, true)}
 
       />
 
@@ -143,8 +137,8 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
           getToothSideColor(number, selected, disabled)
         )}
         style={{ bottom: 0, left: 0 }}
-        ref={(el: HTMLButtonElement) => setRef(number, el)}
-        onClick={handleClick}
+        ref={(el: HTMLButtonElement) => setRef(number, false, el)}
+        onClick={(e) => handleClick(e, false)}
       />
 
     </div>

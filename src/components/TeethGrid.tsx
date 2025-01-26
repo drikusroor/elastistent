@@ -3,6 +3,7 @@ import React from "react";
 
 import { FEATURES } from "../config";
 import Tooth from "./Tooth";
+import { ElasticPoint } from "../types";
 
 type TeethGridProps = {
     teethLayout: {
@@ -11,11 +12,11 @@ type TeethGridProps = {
         bottomLeft: number[];
         bottomRight: number[];
     };
-    currentElastic: number[];
+    currentElastic: ElasticPoint[];
     disabledTeeth: number[];
-    handleToothClick: (number: number) => void;
+    handleToothClick: (number: number, outside: boolean) => void;
     handleToothToggle: (number: number) => void;
-    setToothRef: (number: number, ref: HTMLButtonElement) => void;
+    setToothRef: (number: number, outside: boolean, ref: HTMLButtonElement) => void;
     isMirrorView: boolean;
     svgRef: React.MutableRefObject<SVGSVGElement | null>;
 };
@@ -43,7 +44,7 @@ export function TeethGrid({ teethLayout, currentElastic, disabledTeeth, handleTo
                             row={0}
                             onClick={handleToothClick}
                             onToggle={handleToothToggle}
-                            selected={currentElastic.includes(tooth)}
+                            selected={currentElastic.some((e) => e.tooth === tooth)}
                             disabled={
                                 FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
                             }
@@ -60,7 +61,7 @@ export function TeethGrid({ teethLayout, currentElastic, disabledTeeth, handleTo
                             row={0}
                             onClick={handleToothClick}
                             onToggle={handleToothToggle}
-                            selected={currentElastic.includes(tooth)}
+                            selected={currentElastic.some((e) => e.tooth === tooth)}
                             disabled={
                                 FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
                             }
@@ -77,7 +78,7 @@ export function TeethGrid({ teethLayout, currentElastic, disabledTeeth, handleTo
                             row={1}
                             onClick={handleToothClick}
                             onToggle={handleToothToggle}
-                            selected={currentElastic.includes(tooth)}
+                            selected={currentElastic.some((e) => e.tooth === tooth)}
                             disabled={
                                 FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
                             }
@@ -94,7 +95,7 @@ export function TeethGrid({ teethLayout, currentElastic, disabledTeeth, handleTo
                             row={1}
                             onClick={handleToothClick}
                             onToggle={handleToothToggle}
-                            selected={currentElastic.includes(tooth)}
+                            selected={currentElastic.some((e) => e.tooth === tooth)}
                             disabled={
                                 FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
                             }
