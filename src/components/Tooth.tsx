@@ -73,6 +73,16 @@ const getToothColor = (number: number, selected: boolean, disabled: boolean) => 
   return 'bg-yellow-50';
 };
 
+const getToothSideColor = (number: number, selected: boolean, disabled: boolean) => {
+  if (disabled && FEATURES.DISABLE_TEETH) return 'bg-gray-300';
+  if (selected) return 'bg-blue-500';
+  if (FEATURES.HIGHLIGHT_SPECIAL_TEETH) {
+    if (middleIncisors.includes(number)) return 'bg-green-200';
+    if (canines.includes(number)) return 'bg-purple-200';
+  }
+  return 'bg-yellow-50';
+};
+
 const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, setRef, isMirrorView }: ToothMemo & { isMirrorView: boolean }) => {
   const handleClick = (e: React.MouseEvent) => {
 
@@ -97,14 +107,12 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
   const teethModification = teethModifications[number];
 
   return (
-    <button
-      ref={(el: HTMLButtonElement) => setRef(number, el)}
-      onClick={handleClick}
+    <div
       className={`w-14 h-14 rounded-full m-0.5 flex flex-col items-center justify-center text-xs drop-shadow 
           ${getToothColor(number, selected, disabled)}
           ${teethModification?.className || ''}
           ${teethModification?.rotation || ''}
-          `}>
+    `}>
       {FEATURES.TOOTH_ICONS && (
         <div className="h-8 w-8" style={{ transform: isMirrorView ? 'scale(-1, 1)' : undefined }}>
           <ToothIcon
@@ -116,7 +124,33 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
       <span className={classNames(isMirrorView ? 'transform scale-x-[-1]' : '', teethModification?.counterRotation || '')}>
         {number}
       </span>
-    </button>
+
+      {/* outer half */}
+      <button
+        disabled={disabled}
+        className={classNames(
+          "absolute w-14 h-7 hover:bg-slate-800 opacity-20 rounded-t-full",
+          getToothSideColor(number, selected, disabled)
+        )}
+        style={{ top: 0, left: 0 }}
+        ref={(el: HTMLButtonElement) => setRef(number, el)}
+        onClick={handleClick}
+
+      />
+
+      {/* inner half */}
+      <button
+        disabled={disabled}
+        className={classNames(
+          "absolute w-14 h-7 hover:bg-slate-800 opacity-20 rounded-b-full",
+          getToothSideColor(number, selected, disabled)
+        )}
+        style={{ bottom: 0, left: 0 }}
+        ref={(el: HTMLButtonElement) => setRef(number, el)}
+        onClick={handleClick}
+      />
+
+    </div>
   );
 });
 
