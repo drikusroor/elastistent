@@ -59,8 +59,21 @@ const ElasticPlacer = () => {
     if (savedElastics) {
       try {
         let parsedElastics = JSON.parse(savedElastics);
+
+        console.log("parsedElastics", parsedElastics);
+
         // Convert old format (if needed) to numeric IDs:
         parsedElastics = parsedElastics.map((el: any) => {
+
+          const teeth = el.t?.map((teeth: { t: number, o: boolean }) => {
+            return {
+              tooth: teeth.t,
+              outside: teeth.o,
+            }
+          });
+
+          let type = el.type;
+
           // If el.type is a string name, convert to numeric id
           if (typeof el.type === "string") {
             const foundType =
@@ -68,7 +81,11 @@ const ElasticPlacer = () => {
               ELASTIC_TYPES[0];
             el.type = foundType.id;
           }
-          return el;
+          return {
+            ...el,
+            type,
+            teeth,
+          }
         });
         setElastics(parsedElastics);
       } catch (error) {
@@ -97,7 +114,16 @@ const ElasticPlacer = () => {
     if (initialLoadDone.current) {
       const params = new URLSearchParams();
       if (elastics.length > 0) {
-        params.set("e", JSON.stringify(elastics));
+
+        // Convert elastics to compact format
+        const compactElastics = elastics.map((el) => {
+          return {
+            t: el.teeth.map((t) => ({ t: t.tooth, o: t.outside })),
+            type: el.type,
+          }
+        });
+
+        params.set("e", JSON.stringify(compactElastics));
       }
       if (FEATURES.DISABLE_TEETH && disabledTeeth.length > 0) {
         params.set("t", JSON.stringify(disabledTeeth));
