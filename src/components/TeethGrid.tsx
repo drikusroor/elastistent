@@ -44,7 +44,7 @@ export function TeethGrid({ teethLayout, currentElastic, disabledTeeth, handleTo
                             row={0}
                             onClick={handleToothClick}
                             onToggle={handleToothToggle}
-                            selected={currentElastic.some((e) => e.tooth === tooth)}
+                            currentElastic={currentElastic}
                             disabled={
                                 FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
                             }
@@ -61,7 +61,7 @@ export function TeethGrid({ teethLayout, currentElastic, disabledTeeth, handleTo
                             row={0}
                             onClick={handleToothClick}
                             onToggle={handleToothToggle}
-                            selected={currentElastic.some((e) => e.tooth === tooth)}
+                            currentElastic={currentElastic}
                             disabled={
                                 FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
                             }
@@ -78,7 +78,7 @@ export function TeethGrid({ teethLayout, currentElastic, disabledTeeth, handleTo
                             row={1}
                             onClick={handleToothClick}
                             onToggle={handleToothToggle}
-                            selected={currentElastic.some((e) => e.tooth === tooth)}
+                            currentElastic={currentElastic}
                             disabled={
                                 FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
                             }
@@ -95,7 +95,7 @@ export function TeethGrid({ teethLayout, currentElastic, disabledTeeth, handleTo
                             row={1}
                             onClick={handleToothClick}
                             onToggle={handleToothToggle}
-                            selected={currentElastic.some((e) => e.tooth === tooth)}
+                            currentElastic={currentElastic}
                             disabled={
                                 FEATURES.DISABLE_TEETH && disabledTeeth.includes(tooth)
                             }

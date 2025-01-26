@@ -2,6 +2,7 @@ import React from "react";
 import { FEATURES } from "../config";
 import ToothIcon, { TOOTH_TYPE_MAP } from "./ToothIcon";
 import { classNames } from "../util/class-names";
+import { ElasticPoint } from "../types";
 
 const middleIncisors = [11, 21, 31, 41];
 const canines = [13, 23, 33, 43];
@@ -55,7 +56,7 @@ type ToothMemo = {
   row: number;
   onClick: (number: number, outside: boolean) => void;
   onToggle: (number: number) => void;
-  selected: boolean;
+  currentElastic: ElasticPoint[];
   disabled: boolean;
   setRef: (number: number, outside: boolean, ref: HTMLButtonElement) => void;
 }
@@ -70,17 +71,17 @@ const getToothColor = (number: number, selected: boolean, disabled: boolean) => 
   return 'bg-yellow-50';
 };
 
-const getToothSideColor = (number: number, selected: boolean, disabled: boolean) => {
+const getToothSideClassNames = (number: number, selected: boolean, disabled: boolean) => {
   if (disabled && FEATURES.DISABLE_TEETH) return 'bg-gray-300';
-  if (selected) return 'bg-blue-500';
+  if (selected) return 'border border-blue-900 bg-blue-500 bg-opacity-50';
   if (FEATURES.HIGHLIGHT_SPECIAL_TEETH) {
     if (middleIncisors.includes(number)) return 'bg-green-200';
     if (canines.includes(number)) return 'bg-purple-200';
   }
-  return 'bg-yellow-50';
+  return '';
 };
 
-const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, setRef, isMirrorView }: ToothMemo & { isMirrorView: boolean }) => {
+const Tooth = React.memo(({ number, row, onClick, onToggle, currentElastic, disabled, setRef, isMirrorView }: ToothMemo & { isMirrorView: boolean }) => {
 
   const handleClick = (e: React.MouseEvent, outside: boolean) => {
 
@@ -94,13 +95,17 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
     }
   };
 
+  const isSelected = (tooth: number, outside: boolean) => {
+    return currentElastic.some(e => e.tooth === tooth && e.outside === outside);
+  };
+
   const toothType = TOOTH_TYPE_MAP[number];
   const teethModification = teethModifications[number];
 
   return (
     <div
       className={`w-14 h-14 rounded-full m-0.5 flex flex-col items-center justify-center text-xs drop-shadow 
-          ${getToothColor(number, selected, disabled)}
+          ${getToothColor(number, false, disabled)}
           ${teethModification?.className || ''}
           ${teethModification?.rotation || ''}
     `}>
@@ -112,7 +117,7 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
         <div className="h-8 w-8" style={{ transform: isMirrorView ? 'scale(-1, 1)' : undefined }}>
           <ToothIcon
             type={toothType}
-            className={`text-current ${selected ? 'text-white' : 'text-gray-600'} ${row === 0 ? 'rotate-180' : ''}`}
+            className={`text-current text-gray-600 ${row === 0 ? 'rotate-180' : ''}`}
           />
         </div>
       )}
@@ -124,8 +129,8 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
       <button
         disabled={disabled}
         className={classNames(
-          "absolute w-14 h-7 hover:bg-slate-800 opacity-20 rounded-t-full",
-          getToothSideColor(number, selected, disabled)
+          getToothSideClassNames(number, isSelected(number, true), disabled),
+          "absolute w-14 h-7 hover:bg-blue-500 hover:bg-opacity-50 rounded-t-full",
         )}
         style={{ top: 0, left: 0 }}
         ref={(el: HTMLButtonElement) => setRef(number, true, el)}
@@ -137,8 +142,8 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
       <button
         disabled={disabled}
         className={classNames(
-          "absolute w-14 h-7 hover:bg-slate-800 opacity-20 rounded-b-full",
-          getToothSideColor(number, selected, disabled)
+          getToothSideClassNames(number, isSelected(number, false), disabled),
+          "absolute w-14 h-7 hover:bg-blue-500 hover:bg-opacity-50 rounded-b-full",
         )}
         style={{ bottom: 0, left: 0 }}
         ref={(el: HTMLButtonElement) => setRef(number, false, el)}

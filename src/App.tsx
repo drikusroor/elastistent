@@ -219,7 +219,7 @@ const ElasticPlacer = () => {
           if (!rect) return null;
 
           const baseX = rect.left - svgRect.left + rect.width / 2;
-          let x = isMirrorView ? svgRect.width - baseX : baseX; 
+          let x = isMirrorView ? svgRect.width - baseX : baseX;
           let y = rect.top - svgRect.top + rect.height / 2;
 
           return {
@@ -408,7 +408,16 @@ const ElasticPlacer = () => {
         </div>
 
         {/* Teeth Grid */}
-        <TeethGrid svgRef={svgRef} teethLayout={teethLayout} currentElastic={currentElastic} disabledTeeth={disabledTeeth} handleToothClick={handleToothClick} handleToothToggle={handleToothToggle} setToothRef={setToothRef} isMirrorView={isMirrorView} />
+        <TeethGrid
+          svgRef={svgRef}
+          teethLayout={teethLayout}
+          currentElastic={currentElastic}
+          disabledTeeth={disabledTeeth}
+          handleToothClick={handleToothClick}
+          handleToothToggle={handleToothToggle}
+          setToothRef={setToothRef}
+          isMirrorView={isMirrorView}
+        />
       </div>
 
       <div className="mx-auto mt-4 flex flex-col sm:flex-row justify-center md:justify-between items-center sm:items-start gap-4 md:min-w-72 md:p-8">
