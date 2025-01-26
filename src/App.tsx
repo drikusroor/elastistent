@@ -219,10 +219,12 @@ const ElasticPlacer = () => {
           if (!rect) return null;
 
           const baseX = rect.left - svgRect.left + rect.width / 2;
-          const x = isMirrorView ? svgRect.width - baseX : baseX;
+          let x = isMirrorView ? svgRect.width - baseX : baseX; 
+          let y = rect.top - svgRect.top + rect.height / 2;
+
           return {
             x,
-            y: rect.top - svgRect.top + rect.height / 2,
+            y,
           };
         })
         .filter((point) => point !== null) as { x: number; y: number }[];

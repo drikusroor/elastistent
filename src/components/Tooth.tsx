@@ -17,35 +17,35 @@ type TeethMofidication = {
 const teethModifications: TeethMofidication = {
   18: { className: 'translate-y-0', rotation: '-rotate-90', counterRotation: 'rotate-90' },
   17: { className: 'translate-y-0', rotation: '-rotate-90', counterRotation: 'rotate-90' },
-  16: { className: 'translate-y-0 ml-2', rotation: '-rotate-[75deg]', counterRotation: 'rotate-[75deg]' },
-  15: { className: 'translate-y-0 ml-4', rotation: '-rotate-[60deg]', counterRotation: 'rotate-[60deg]' },
-  14: { className: 'translate-y-0 ml-6', rotation: '-rotate-[60deg]', counterRotation: 'rotate-[60deg]' },
-  13: { className: 'translate-y-0 ml-10', rotation: '-rotate-45', counterRotation: 'rotate-45' },
+  16: { className: 'translate-y-0 ml-2', rotation: '-rotate-[85deg]', counterRotation: 'rotate-[75deg]' },
+  15: { className: 'translate-y-0 ml-4', rotation: '-rotate-[80deg]', counterRotation: 'rotate-[60deg]' },
+  14: { className: 'translate-y-0 ml-6', rotation: '-rotate-[75deg]', counterRotation: 'rotate-[60deg]' },
+  13: { className: 'translate-y-0 ml-10', rotation: '-rotate-[60deg]', counterRotation: 'rotate-45' },
   12: { className: 'translate-y-4 ml-22', rotation: '-rotate-[30deg]', counterRotation: 'rotate-[30deg]' },
-  11: { className: 'translate-y-16 ml-37', rotation: '-rotate-[10deg]', counterRotation: 'rotate-[10deg]' },
-  21: { className: 'translate-y-16 mr-37', rotation: 'rotate-[10deg]', counterRotation: '-rotate-[10deg]' },
+  11: { className: 'translate-y-16 ml-37', rotation: '-rotate-[5deg]', counterRotation: 'rotate-[10deg]' },
+  21: { className: 'translate-y-16 mr-37', rotation: 'rotate-[5deg]', counterRotation: '-rotate-[10deg]' },
   22: { className: 'translate-y-4 mr-22', rotation: 'rotate-[30deg]', counterRotation: '-rotate-[30deg]' },
-  23: { className: 'translate-y-0 mr-10', rotation: 'rotate-45', counterRotation: '-rotate-45' },
-  24: { className: 'translate-y-0 mr-6', rotation: 'rotate-[60deg]', counterRotation: '-rotate-[60deg]' },
-  25: { className: 'translate-y-0 mr-4', rotation: 'rotate-[60deg]', counterRotation: '-rotate-[60deg]' },
-  26: { className: 'translate-y-0 mr-2', rotation: 'rotate-[75deg]', counterRotation: '-rotate-[75deg]' },
+  23: { className: 'translate-y-0 mr-10', rotation: 'rotate-[60deg]', counterRotation: '-rotate-45' },
+  24: { className: 'translate-y-0 mr-6', rotation: 'rotate-[75deg]', counterRotation: '-rotate-[60deg]' },
+  25: { className: 'translate-y-0 mr-4', rotation: 'rotate-[80deg]', counterRotation: '-rotate-[60deg]' },
+  26: { className: 'translate-y-0 mr-2', rotation: 'rotate-[85deg]', counterRotation: '-rotate-[75deg]' },
   27: { className: 'translate-y-0', rotation: 'rotate-90', counterRotation: '-rotate-90' },
   28: { className: 'translate-y-0', rotation: 'rotate-90', counterRotation: '-rotate-90' },
 
   48: { className: '-translate-y-0', rotation: '-rotate-90', counterRotation: 'rotate-90' },
   47: { className: 'translate-y-0', rotation: '-rotate-90', counterRotation: 'rotate-90' },
-  46: { className: 'translate-y-0 ml-2', rotation: '-rotate-[105deg]', counterRotation: 'rotate-[105deg]' },
-  45: { className: 'translate-y-0 ml-4', rotation: '-rotate-[120deg]', counterRotation: 'rotate-[120deg]' },
-  44: { className: 'translate-y-0 ml-6', rotation: '-rotate-[120deg]', counterRotation: 'rotate-[120deg]' },
-  43: { className: 'translate-y-0 ml-10', rotation: '-rotate-[135deg]', counterRotation: 'rotate-[135deg]' },
+  46: { className: 'translate-y-0 ml-2', rotation: '-rotate-[95deg]', counterRotation: 'rotate-[105deg]' },
+  45: { className: 'translate-y-0 ml-4', rotation: '-rotate-[100deg]', counterRotation: 'rotate-[120deg]' },
+  44: { className: 'translate-y-0 ml-6', rotation: '-rotate-[105deg]', counterRotation: 'rotate-[120deg]' },
+  43: { className: 'translate-y-0 ml-10', rotation: '-rotate-[120deg]', counterRotation: 'rotate-[135deg]' },
   42: { className: '-translate-y-4 ml-20', rotation: '-rotate-[150deg]', counterRotation: 'rotate-[150deg]' },
-  41: { className: '-translate-y-16 ml-35', rotation: '-rotate-[170deg]', counterRotation: 'rotate-[170deg]' },
-  31: { className: '-translate-y-16 mr-35', rotation: 'rotate-[170deg]', counterRotation: '-rotate-[170deg]' },
+  41: { className: '-translate-y-16 ml-35', rotation: '-rotate-[175deg]', counterRotation: 'rotate-[170deg]' },
+  31: { className: '-translate-y-16 mr-35', rotation: 'rotate-[175deg]', counterRotation: '-rotate-[170deg]' },
   32: { className: '-translate-y-4 mr-20', rotation: 'rotate-[150deg]', counterRotation: '-rotate-[150deg]' },
-  33: { className: 'translate-y-0 mr-10', rotation: 'rotate-[135deg]', counterRotation: '-rotate-[135deg]' },
-  34: { className: 'translate-y-0 mr-6', rotation: 'rotate-[120deg]', counterRotation: '-rotate-[120deg]' },
-  35: { className: 'translate-y-0 mr-4', rotation: 'rotate-[120deg]', counterRotation: '-rotate-[120deg]' },
-  36: { className: 'translate-y-0 mr-2', rotation: 'rotate-[105deg]', counterRotation: '-rotate-[105deg]' },
+  33: { className: 'translate-y-0 mr-10', rotation: 'rotate-[120deg]', counterRotation: '-rotate-[135deg]' },
+  34: { className: 'translate-y-0 mr-6', rotation: 'rotate-[105deg]', counterRotation: '-rotate-[120deg]' },
+  35: { className: 'translate-y-0 mr-4', rotation: 'rotate-[100deg]', counterRotation: '-rotate-[120deg]' },
+  36: { className: 'translate-y-0 mr-2', rotation: 'rotate-[95deg]', counterRotation: '-rotate-[105deg]' },
   37: { className: 'translate-y-0', rotation: 'rotate-90', counterRotation: '-rotate-90' },
   38: { className: 'translate-y-0', rotation: 'rotate-90', counterRotation: '-rotate-90' },
 }
@@ -104,6 +104,10 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, selected, disabled, 
           ${teethModification?.className || ''}
           ${teethModification?.rotation || ''}
     `}>
+
+      {/* thin line that divides the tooth in half */}
+      <div className="absolute h-14 bg-blue-500 rotate-90 opacity-25" style={{ width: 1 }} />
+
       {FEATURES.TOOTH_ICONS && (
         <div className="h-8 w-8" style={{ transform: isMirrorView ? 'scale(-1, 1)' : undefined }}>
           <ToothIcon
