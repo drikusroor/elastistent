@@ -14,9 +14,6 @@ type TeethMofidication = {
   };
 }
 
-// Molars should be slightly wider than premolars
-// Canines should be slightly pointier
-// Incisors should be slightly smaller
 const teethModifications: TeethMofidication = {
   18: { className: 'translate-y-0', rotation: '-rotate-90', counterRotation: 'rotate-90' },
   17: { className: 'translate-y-0', rotation: '-rotate-90', counterRotation: 'rotate-90' },
