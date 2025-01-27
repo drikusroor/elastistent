@@ -3,6 +3,7 @@ import { FEATURES } from "../config";
 import ToothIcon, { TOOTH_TYPE_MAP } from "./ToothIcon";
 import { classNames } from "../util/class-names";
 import { ElasticPoint } from "../types";
+import { useTranslation } from "react-i18next";
 
 const middleIncisors = [11, 21, 31, 41];
 const canines = [13, 23, 33, 43];
@@ -83,6 +84,8 @@ const getToothSideClassNames = (number: number, selected: boolean, disabled: boo
 
 const Tooth = React.memo(({ number, row, onClick, onToggle, currentElastic, disabled, setRef, isMirrorView }: ToothMemo & { isMirrorView: boolean }) => {
 
+  const { t } = useTranslation();
+
   const handleClick = (e: React.MouseEvent, outside: boolean) => {
 
     // Set ref based on the element clicked
@@ -97,6 +100,37 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, currentElastic, disa
 
   const isSelected = (tooth: number, outside: boolean) => {
     return currentElastic.some(e => e.tooth === tooth && e.outside === outside);
+  };
+
+  const getToothPosition = (number: number) => {
+    if (number < 20) return 'topRight';
+    if (number < 30) return 'topLeft';
+    if (number < 40) return 'bottomLeft';
+    return 'bottomRight';
+  };
+
+  const getToothType = (number: number) => {
+    const position = number % 10;
+    switch (position) {
+      case 1:
+        return 'centralIncisor';
+      case 2:
+        return 'lateralIncisor';
+      case 3:
+        return 'canine';
+      case 4:
+        return 'firstPremolar';
+      case 5:
+        return 'secondPremolar';
+      case 6:
+        return 'firstMolar';
+      case 7:
+        return 'secondMolar';
+      case 8:
+        return 'thirdMolar';
+      default:
+        return 'centralIncisor'; // fallback
+    }
   };
 
   const toothType = TOOTH_TYPE_MAP[number];
@@ -137,7 +171,11 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, currentElastic, disa
         style={{ top: 0, left: 0 }}
         ref={(el: HTMLButtonElement) => setRef(number, true, el)}
         onClick={(e) => handleClick(e, true)}
-
+        title={t('teeth.tooltip', {
+          position: t(`teeth.positions.${getToothPosition(number)}`),
+          type: t(`teeth.types.${getToothType(number)}`),
+          side: t('teeth.sides.outer')
+        })}
       />
 
       {/* inner half */}
@@ -150,6 +188,11 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, currentElastic, disa
         style={{ bottom: 0, left: 0 }}
         ref={(el: HTMLButtonElement) => setRef(number, false, el)}
         onClick={(e) => handleClick(e, false)}
+        title={t('teeth.tooltip', {
+          position: t(`teeth.positions.${getToothPosition(number)}`),
+          type: t(`teeth.types.${getToothType(number)}`),
+          side: t('teeth.sides.inner')
+        })}
       />
 
     </div>

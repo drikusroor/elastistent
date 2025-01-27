@@ -60,6 +60,29 @@ const resources = {
         en: 'English',
         nl: 'Nederlands',
       },
+      teeth: {
+        tooltip: '{{position}} {{type}} ({{side}})',
+        positions: {
+          topLeft: 'Upper left',
+          topRight: 'Upper right',
+          bottomLeft: 'Lower left',
+          bottomRight: 'Lower right'
+        },
+        types: {
+          centralIncisor: 'central incisor',
+          lateralIncisor: 'lateral incisor',
+          canine: 'canine',
+          firstPremolar: 'first premolar',
+          secondPremolar: 'second premolar',
+          firstMolar: 'first molar',
+          secondMolar: 'second molar',
+          thirdMolar: 'third molar'
+        },
+        sides: {
+          inner: 'inner side',
+          outer: 'outer side'
+        }
+      },
     },
   },
   nl: {
@@ -112,6 +135,29 @@ const resources = {
         select: 'Selecteer taal',
         en: 'English',
         nl: 'Nederlands',
+      },
+      teeth: {
+        tooltip: '{{position}} {{type}} ({{side}})',
+        positions: {
+          topLeft: 'Linker boven',
+          topRight: 'Rechter boven',
+          bottomLeft: 'Linker onder',
+          bottomRight: 'Rechter onder'
+        },
+        types: {
+          centralIncisor: 'centrale snijtand',
+          lateralIncisor: 'laterale snijtand',
+          canine: 'hoektand',
+          firstPremolar: 'eerste premolaar',
+          secondPremolar: 'tweede premolaar',
+          firstMolar: 'eerste molaar',
+          secondMolar: 'tweede molaar',
+          thirdMolar: 'derde molaar'
+        },
+        sides: {
+          inner: 'binnenkant',
+          outer: 'buitenkant'
+        }
       },
     },
   },
