@@ -111,7 +111,9 @@ const Tooth = React.memo(({ number, row, onClick, onToggle, currentElastic, disa
     `}>
 
       {/* thin line that divides the tooth in half */}
-      <div className="absolute h-14 bg-blue-500 rotate-90 opacity-25" style={{ width: 1 }} />
+      {FEATURES.SHOW_TOOTH_DIVIDER_LINE && (
+        <div className="absolute h-14 bg-blue-500 rotate-90 opacity-25" style={{ width: 1 }} />
+      )}
 
       {FEATURES.TOOTH_ICONS && (
         <div className="h-8 w-8" style={{ transform: isMirrorView ? 'scale(-1, 1)' : undefined }}>

@@ -5,4 +5,5 @@ export const FEATURES = {
   TOOTH_ICONS: true,
   ALLOW_MULTIPLE_ELASTICS_PER_TOOTH: false,
   TIME_BASED_ELASTICS: true,
+  SHOW_TOOTH_DIVIDER_LINE: false,
 } as const;
