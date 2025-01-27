@@ -36,7 +36,7 @@ export function TeethGrid({ teethLayout, currentElastic, disabledTeeth, handleTo
                     className="absolute inset-0 pointer-events-none z-10 drop-shadow max-w-4xl"
                     style={{ width: "100%", height: "100%" }}
                 ></svg>
-                <div className="flex flex-col-reverse items-start pb-2.5 border-b-blue-300 border-b-2">
+                <div className="flex flex-col-reverse items-end sm:items-start pb-2.5 border-b-blue-300 border-b-2">
                     {teethLayout.topLeft.map((tooth) => (
                         <Tooth
                             key={tooth}
@@ -53,7 +53,7 @@ export function TeethGrid({ teethLayout, currentElastic, disabledTeeth, handleTo
                         />
                     ))}
                 </div>
-                <div className="flex flex-col items-end pb-2.5 border-b-blue-300 border-b-2">
+                <div className="flex flex-col items-start sm:items-end pb-2.5 border-b-blue-300 border-b-2">
                     {teethLayout.topRight.map((tooth) => (
                         <Tooth
                             key={tooth}
@@ -70,7 +70,7 @@ export function TeethGrid({ teethLayout, currentElastic, disabledTeeth, handleTo
                         />
                     ))}
                 </div>
-                <div className="flex flex-col items-start pt-2.5">
+                <div className="flex flex-col items-end sm:items-start pt-2.5">
                     {teethLayout.bottomLeft.map((tooth) => (
                         <Tooth
                             key={tooth}
@@ -87,7 +87,7 @@ export function TeethGrid({ teethLayout, currentElastic, disabledTeeth, handleTo
                         />
                     ))}
                 </div>
-                <div className="flex flex-col-reverse items-end pt-2.5">
+                <div className="flex flex-col-reverse items-start sm:items-end pt-2.5">
                     {teethLayout.bottomRight.map((tooth) => (
                         <Tooth
                             key={tooth}
