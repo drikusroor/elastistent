@@ -222,7 +222,7 @@ export function TeethModel3D(props: TeethModel3DProps) {
             fontSize={0.25}
             scale={[0.25, 0.25, 1]}
             position={[-0.075, -1.23, 1.03]}
-            rotation={[0, -.2, 0]}
+            rotation={[0, -0.2, 0]}
             color="#333333"
             anchorX="center"
             anchorY="middle"
@@ -233,7 +233,7 @@ export function TeethModel3D(props: TeethModel3DProps) {
             fontSize={0.25}
             scale={[0.25, 0.25, 1]}
             position={[-0.21, -1.23, 0.95]}
-            rotation={[0, -.65, 0]}
+            rotation={[0, -0.65, 0]}
             color="#333333"
             anchorX="center"
             anchorY="middle"
@@ -244,7 +244,7 @@ export function TeethModel3D(props: TeethModel3DProps) {
             fontSize={0.25}
             scale={[0.25, 0.25, 1]}
             position={[0.075, -1.23, 1.03]}
-            rotation={[0, .2, 0]}
+            rotation={[0, 0.2, 0]}
             color="#333333"
             anchorX="center"
             anchorY="middle"
@@ -254,14 +254,70 @@ export function TeethModel3D(props: TeethModel3DProps) {
           <Text
             fontSize={0.25}
             scale={[0.25, 0.25, 1]}
-            position={[0.2, -1.23, 0.95]}
-            rotation={[0, .65, 0]}
+            position={[0.19, -1.23, 0.95]}
+            rotation={[0, 0.65, 0]}
             color="#333333"
             anchorX="center"
             anchorY="middle"
           >
             22
           </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.27, -1.23, 0.86]}
+            rotation={[0, 0.9, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            23
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.345, -1.24, 0.74]}
+            rotation={[0, 1.1, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            24
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.39, -1.25, 0.59]}
+            rotation={[0, 1.4, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            25
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.405, -1.26, 0.43]}
+            rotation={[0, 1.35, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            26
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.43, -1.26, 0.29]}
+            rotation={[0, 1.4, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            27
+          </Text>
+
           <OrbitControls />
         </group>
       </group>
