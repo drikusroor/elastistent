@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { Canvas } from "@react-three/fiber";
 import { TeethModel3D } from "../components/TeethModel3D";
+import { TeethModel3DDewa } from "../components/TeethModel3DDewa";
 
 // TeethModel stories
 const teethModelMeta = {
@@ -25,10 +26,22 @@ type TeethModelStory = StoryObj<typeof teethModelMeta>;
 export const DefaultTeethModel: TeethModelStory = {
   render: (args) => (
     <div style={{ width: "600px", height: "400px" }}>
-      <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
+      <Canvas camera={{ position: [0, 0, 5], fov: 50, zoom: 2 }}> 
         <ambientLight intensity={2.5} />
         <pointLight position={[10, 10, 10]} />
-        <TeethModel3D {...args} />
+        <TeethModel3D {...args} position={[0, 0, 0]} />
+      </Canvas>
+    </div>
+  ),
+};
+
+export const DewaTeethModel: TeethModelStory = {
+  render: (args) => (
+    <div style={{ width: "600px", height: "400px" }}>
+      <Canvas camera={{ position: [0, 0, 50], fov: 50 }}>
+        <ambientLight intensity={0.5} />
+        <pointLight position={[10, 10, 10]} />
+        <TeethModel3DDewa {...args} />
       </Canvas>
     </div>
   ),

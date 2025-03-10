@@ -10,7 +10,7 @@ Title: Human teeth
 import { useGLTF } from '@react-three/drei'
 import { JSX } from 'react'
 
-type ModelProps = JSX.IntrinsicElements['div'] & {
+type ModelProps = JSX.IntrinsicElements['group'] & {
   onToothClick?: (toothName: string) => void
 }
 
