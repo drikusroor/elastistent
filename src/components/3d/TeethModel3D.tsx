@@ -221,13 +221,25 @@ export function TeethModel3D(props: TeethModel3DProps) {
           <Text
             fontSize={0.25}
             scale={[0.25, 0.25, 1]}
-            position={[-0.075, -1.25, 1.05]}
+            position={[-0.075, -1.23, 1.03]}
             color="#333333"
             anchorX="center"
             anchorY="middle"
           >
             11
           </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.075, -1.23, 1.03]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            21
+          </Text>
+          <OrbitControls />
+          <Stats />
         </group>
       </group>
     </group>
