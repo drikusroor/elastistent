@@ -2,8 +2,8 @@ import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { Canvas } from "@react-three/fiber";
 
-import { TeethModel3D } from "../components/TeethModel3D";
-import TeethModel3DViewer from "../components/TeethModel3DViewer";
+import { TeethModel3D } from "../components/3d/TeethModel3D";
+import TeethModel3DViewer from "../components/3d/TeethModel3DViewer";
 
 // TeethModel stories
 const teethModelMeta = {
@@ -46,7 +46,7 @@ export const DefaultTeethModel: TeethModelStory = {
 export const WithClickHandler: TeethModelStory = {
   args: {
     onToothClick: (toothNumber: number) =>
-      alert(`Tooth ${toothNumber} clicked`),
+      console.log(`Tooth ${toothNumber} clicked`),
   },
   render: (args) => (
     <div style={{ width: "600px", height: "400px" }}>

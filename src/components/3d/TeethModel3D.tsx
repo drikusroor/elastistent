@@ -8,6 +8,7 @@ import { JSX } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { ThreeEvent } from "@react-three/fiber";
+import { OrbitControls, Stats, Text } from "@react-three/drei";
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -57,6 +58,17 @@ export function TeethModel3D(props: TeethModel3DProps) {
   const { nodes, materials } = useGLTF(
     "/assets/models/human_teeth.glb"
   ) as GLTFResult;
+
+  const handleToothClick = (
+    toothNumber: number,
+    event: ThreeEvent<MouseEvent>
+  ) => {
+    if (!onToothClick) return;
+
+    event.stopPropagation();
+    return onToothClick(toothNumber, event);
+  };
+
   return (
     <group {...props} dispose={null}>
       <group position={[0, 1.359, 0]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -64,148 +76,158 @@ export function TeethModel3D(props: TeethModel3DProps) {
           <mesh
             geometry={nodes.Gums.geometry}
             material={materials.Low_Teeth27}
-            onClick={(e) => onToothClick?.(27, e)}
+            onClick={(e) => handleToothClick(27, e)}
           />
           <mesh
             geometry={nodes.Tooth11.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(11, e)}
+            onClick={(e) => handleToothClick(11, e)}
           />
           <mesh
             geometry={nodes.Tooth12.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(12, e)}
+            onClick={(e) => handleToothClick(12, e)}
           />
           <mesh
             geometry={nodes.Tooth13.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(13, e)}
+            onClick={(e) => handleToothClick(13, e)}
           />
           <mesh
             geometry={nodes.Tooth14.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(14, e)}
+            onClick={(e) => handleToothClick(14, e)}
           />
           <mesh
             geometry={nodes.Tooth15.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(15, e)}
+            onClick={(e) => handleToothClick(15, e)}
           />
           <mesh
             geometry={nodes.Tooth16.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(16, e)}
+            onClick={(e) => handleToothClick(16, e)}
           />
           <mesh
             geometry={nodes.Tooth17.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(17, e)}
+            onClick={(e) => handleToothClick(17, e)}
           />
           <mesh
             geometry={nodes.Tooth21.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(21, e)}
+            onClick={(e) => handleToothClick(21, e)}
           />
           <mesh
             geometry={nodes.Tooth22.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(22, e)}
+            onClick={(e) => handleToothClick(22, e)}
           />
           <mesh
             geometry={nodes.Tooth23.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(23, e)}
+            onClick={(e) => handleToothClick(23, e)}
           />
           <mesh
             geometry={nodes.Tooth24.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(24, e)}
+            onClick={(e) => handleToothClick(24, e)}
           />
           <mesh
             geometry={nodes.Tooth25.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(25, e)}
+            onClick={(e) => handleToothClick(25, e)}
           />
           <mesh
             geometry={nodes.Tooth26.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(26, e)}
+            onClick={(e) => handleToothClick(26, e)}
           />
           <mesh
             geometry={nodes.Tooth27.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(27, e)}
+            onClick={(e) => handleToothClick(27, e)}
           />
           <mesh
             geometry={nodes.Tooth31.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(31, e)}
+            onClick={(e) => handleToothClick(31, e)}
           />
           <mesh
             geometry={nodes.Tooth32.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(32, e)}
+            onClick={(e) => handleToothClick(32, e)}
           />
           <mesh
             geometry={nodes.Tooth33.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(33, e)}
+            onClick={(e) => handleToothClick(33, e)}
           />
           <mesh
             geometry={nodes.Tooth34.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(34, e)}
+            onClick={(e) => handleToothClick(34, e)}
           />
           <mesh
             geometry={nodes.Tooth35.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(35, e)}
+            onClick={(e) => handleToothClick(35, e)}
           />
           <mesh
             geometry={nodes.Tooth36.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(36, e)}
+            onClick={(e) => handleToothClick(36, e)}
           />
           <mesh
             geometry={nodes.Tooth37.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(37, e)}
+            onClick={(e) => handleToothClick(37, e)}
           />
           <mesh
             geometry={nodes.Tooth41.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(41, e)}
+            onClick={(e) => handleToothClick(41, e)}
           />
           <mesh
             geometry={nodes.Tooth42.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(42, e)}
+            onClick={(e) => handleToothClick(42, e)}
           />
           <mesh
             geometry={nodes.Tooth43.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(43, e)}
+            onClick={(e) => handleToothClick(43, e)}
           />
           <mesh
             geometry={nodes.Tooth44.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(44, e)}
+            onClick={(e) => handleToothClick(44, e)}
           />
           <mesh
             geometry={nodes.Tooth45.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(45, e)}
+            onClick={(e) => handleToothClick(45, e)}
           />
           <mesh
             geometry={nodes.Tooth46.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(46, e)}
+            onClick={(e) => handleToothClick(46, e)}
           />
           <mesh
             geometry={nodes.Tooth47.geometry}
             material={materials.Low_Teeth25}
-            onClick={(e) => onToothClick?.(47, e)}
+            onClick={(e) => handleToothClick(47, e)}
           />
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[-0.075, -1.25, 1.05]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            11
+          </Text>
         </group>
       </group>
     </group>
