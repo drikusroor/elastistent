@@ -71,7 +71,7 @@ export function TeethModel3D(props: TeethModel3DProps) {
 
   return (
     <group {...props} dispose={null}>
-      <group position={[0, 1.359, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+      <group position={[0, 1.359, -0.5]} rotation={[-Math.PI / 2, 0, 0]}>
         <group rotation={[Math.PI / 2, 0, 0]}>
           <mesh
             geometry={nodes.Gums.geometry}
@@ -222,6 +222,7 @@ export function TeethModel3D(props: TeethModel3DProps) {
             fontSize={0.25}
             scale={[0.25, 0.25, 1]}
             position={[-0.075, -1.23, 1.03]}
+            rotation={[0, -.2, 0]}
             color="#333333"
             anchorX="center"
             anchorY="middle"
@@ -231,15 +232,37 @@ export function TeethModel3D(props: TeethModel3DProps) {
           <Text
             fontSize={0.25}
             scale={[0.25, 0.25, 1]}
+            position={[-0.21, -1.23, 0.95]}
+            rotation={[0, -.65, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            12
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
             position={[0.075, -1.23, 1.03]}
+            rotation={[0, .2, 0]}
             color="#333333"
             anchorX="center"
             anchorY="middle"
           >
             21
           </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.2, -1.23, 0.95]}
+            rotation={[0, .65, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            22
+          </Text>
           <OrbitControls />
-          <Stats />
         </group>
       </group>
     </group>

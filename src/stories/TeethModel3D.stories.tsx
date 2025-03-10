@@ -4,6 +4,7 @@ import { Canvas } from "@react-three/fiber";
 
 import { TeethModel3D } from "../components/3d/TeethModel3D";
 import TeethModel3DViewer from "../components/3d/TeethModel3DViewer";
+import { Backdrop } from "@react-three/drei";
 
 // TeethModel stories
 const teethModelMeta = {
@@ -51,9 +52,10 @@ export const WithClickHandler: TeethModelStory = {
   render: (args) => (
     <div style={{ width: "600px", height: "400px" }}>
       <Canvas camera={{ position: [0, 0, 5], fov: 50, zoom: 5 }}>
-        <ambientLight intensity={1} />
-        <pointLight position={[2.5, 0, 0]} intensity={10} />
-        <pointLight position={[-2.5, 0, 0]} intensity={10} />
+        <color attach="background" args={["#eee"]} />
+        <ambientLight intensity={1.2} />
+        <pointLight position={[2.5, 0, 1]} intensity={15} />
+        <pointLight position={[-2.5, 0, 1]} intensity={15} />
         <TeethModel3D {...args} />
       </Canvas>
     </div>
