@@ -1,8 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { Canvas } from "@react-three/fiber";
+
 import { TeethModel3D } from "../components/TeethModel3D";
-import { TeethModel3DDewa } from "../components/TeethModel3DDewa";
+import TeethModel3DViewer from "../components/TeethModel3DViewer";
 
 // TeethModel stories
 const teethModelMeta = {
@@ -42,30 +43,17 @@ export const DefaultTeethModel: TeethModelStory = {
   },
 };
 
-export const DewaTeethModel: TeethModelStory = {
-  render: (args) => {
-
-    return (
-      <div style={{ width: "600px", height: "400px" }}>
-        <Canvas camera={{ position: [0, 0, 50], fov: 50, zoom: 20 }}>
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} />
-          <TeethModel3DDewa {...args} position={[0, -20, 0]} />
-        </Canvas>
-      </div>
-    );
-  },
-};
-
 export const WithClickHandler: TeethModelStory = {
   args: {
-    onToothClick: fn(),
+    onToothClick: (toothNumber: number) =>
+      alert(`Tooth ${toothNumber} clicked`),
   },
   render: (args) => (
     <div style={{ width: "600px", height: "400px" }}>
-      <Canvas camera={{ position: [0, 0, 5], fov: 50 }}>
-        <ambientLight intensity={0.5} />
-        <pointLight position={[10, 10, 10]} />
+      <Canvas camera={{ position: [0, 0, 5], fov: 50, zoom: 5 }}>
+        <ambientLight intensity={1} />
+        <pointLight position={[2.5, 0, 0]} intensity={10} />
+        <pointLight position={[-2.5, 0, 0]} intensity={10} />
         <TeethModel3D {...args} />
       </Canvas>
     </div>
@@ -78,6 +66,10 @@ export const WithClickHandler: TeethModelStory = {
       },
     },
   },
+};
+
+export const Viewer: TeethModelStory = {
+  render: () => <TeethModel3DViewer />,
 };
 
 export default teethModelMeta;
