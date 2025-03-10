@@ -4,7 +4,7 @@ Command: npx gltfjsx@6.5.3 public/assets/models/human_teeth.glb --keepmeshes --t
 */
 
 import * as THREE from "three";
-import { JSX } from "react";
+import { JSX, useRef } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { ThreeEvent } from "@react-three/fiber";
@@ -58,6 +58,15 @@ export function TeethModel3D(props: TeethModel3DProps) {
   const { nodes, materials } = useGLTF(
     "/assets/models/human_teeth.glb"
   ) as GLTFResult;
+
+  const lineRef = useRef(null);
+  const line = new THREE.Line();
+  line.geometry = new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(-0.3, -1.4, 0.9),
+    new THREE.Vector3(-0.2, -1.2, 1),
+  ]);
+  line.material = new THREE.LineBasicMaterial({ color: 0x0000ff });
+  lineRef.current
 
   const handleToothClick = (
     toothNumber: number,
@@ -317,6 +326,11 @@ export function TeethModel3D(props: TeethModel3DProps) {
           >
             27
           </Text>
+
+
+          <group position={[0, 0, 0]}>
+            <line ref={lineRef} geometry={line.geometry} material={line.material} />
+          </group>
 
           <OrbitControls />
         </group>
