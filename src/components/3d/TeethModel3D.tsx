@@ -4,11 +4,14 @@ Command: npx gltfjsx@6.5.3 public/assets/models/human_teeth.glb --keepmeshes --t
 */
 
 import * as THREE from "three";
-import { JSX, useRef } from "react";
+import { JSX } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
-import { ThreeEvent } from "@react-three/fiber";
-import { OrbitControls, Stats, Text } from "@react-three/drei";
+import { extend, ThreeEvent } from "@react-three/fiber";
+import { OrbitControls, Text } from "@react-three/drei";
+import { MeshLineGeometry, MeshLineMaterial, raycast } from "meshline";
+
+extend({ MeshLineGeometry, MeshLineMaterial });
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -57,16 +60,7 @@ export function TeethModel3D(props: TeethModel3DProps) {
   const { onToothClick } = props;
   const { nodes, materials } = useGLTF(
     "/assets/models/human_teeth.glb"
-  ) as GLTFResult;
-
-  const lineRef = useRef(null);
-  const line = new THREE.Line();
-  line.geometry = new THREE.BufferGeometry().setFromPoints([
-    new THREE.Vector3(-0.3, -1.4, 0.9),
-    new THREE.Vector3(-0.2, -1.2, 1),
-  ]);
-  line.material = new THREE.LineBasicMaterial({ color: 0x0000ff });
-  lineRef.current
+  ) as unknown as GLTFResult;
 
   const handleToothClick = (
     toothNumber: number,
@@ -327,10 +321,16 @@ export function TeethModel3D(props: TeethModel3DProps) {
             27
           </Text>
 
-
-          <group position={[0, 0, 0]}>
-            <line ref={lineRef} geometry={line.geometry} material={line.material} />
-          </group>
+          <mesh raycast={raycast}>
+            <meshLineGeometry
+              points={[
+                [-0.2, -1.2, 1],
+                [-0.3, -1.4, 0.8],
+              ]}
+            />
+            {/* If you're rendering transparent lines or using a texture with alpha map, you should set depthTest to false, transparent to true and blending to an appropriate blending mode, or use alphaTest. */}
+            <meshLineMaterial lineWidth={0.05} color="#dd0000" transparent depthTest={false} />
+          </mesh>
 
           <OrbitControls />
         </group>
