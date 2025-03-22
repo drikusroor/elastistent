@@ -4,15 +4,25 @@ Command: npx gltfjsx@6.5.3 public/assets/models/human_teeth.glb --keepmeshes --t
 */
 
 import * as THREE from "three";
-import { JSX } from "react";
+import React, { useMemo } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 import { extend, ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
 import { MeshLineGeometry, MeshLineMaterial, raycast } from "meshline";
-import { Elastic, ElasticPoint } from "../../types";
+import { Elastic } from "../../types";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
+
+// Fix for TypeScript errors with meshline components
+declare global {
+  namespace JSX {
+    interface IntrinsicElements {
+      meshLineGeometry: any;
+      meshLineMaterial: any;
+    }
+  }
+}
 
 type GLTFResult = GLTF & {
   nodes: {
@@ -50,13 +60,61 @@ type GLTFResult = GLTF & {
     Low_Teeth27: THREE.MeshStandardMaterial;
     Low_Teeth25: THREE.MeshStandardMaterial;
   };
-  animations: GLTFAction[];
+  animations: any[];
 };
 
 interface TeethModel3DProps {
   onToothClick?: (toothNumber: number, event?: ThreeEvent<MouseEvent>) => void;
   elastics: Elastic[];
 }
+
+// Map of tooth numbers to their approximate 3D positions based on text positions
+const toothPositions: { [key: number]: [number, number, number] } = {
+  11: [-0.075, -1.23, 1.03],
+  12: [-0.21, -1.23, 0.95],
+  13: [-0.34, -1.23, 0.85],
+  14: [-0.4, -1.24, 0.7],
+  15: [-0.45, -1.25, 0.5],
+  16: [-0.46, -1.26, 0.34],
+  17: [-0.47, -1.26, 0.2],
+
+  21: [0.075, -1.23, 1.03],
+  22: [0.19, -1.23, 0.95],
+  23: [0.27, -1.23, 0.86],
+  24: [0.345, -1.24, 0.74],
+  25: [0.39, -1.25, 0.59],
+  26: [0.405, -1.26, 0.43],
+  27: [0.43, -1.26, 0.29],
+
+  31: [0.075, -1.4, 1.03],
+  32: [0.19, -1.4, 0.95],
+  33: [0.27, -1.4, 0.86],
+  34: [0.345, -1.4, 0.74],
+  35: [0.39, -1.4, 0.59],
+  36: [0.405, -1.4, 0.43],
+  37: [0.43, -1.4, 0.29],
+
+  41: [-0.075, -1.4, 1.03],
+  42: [-0.21, -1.4, 0.95],
+  43: [-0.34, -1.4, 0.85],
+  44: [-0.4, -1.4, 0.7],
+  45: [-0.45, -1.4, 0.5],
+  46: [-0.46, -1.4, 0.34],
+  47: [-0.47, -1.4, 0.2],
+};
+
+// Offset for inside vs outside of teeth
+const sideOffset: { [key: boolean]: [number, number, number] } = {
+  true: [0, 0, 0.05], // outside
+  false: [0, 0, -0.05], // inside
+};
+
+// Colors and thickness for different elastic types
+const ELASTIC_TYPES = [
+  { id: 0, name: "Rabbit", color: "#FF5555", thickness: 0.03 },
+  { id: 1, name: "Chipmunk", color: "#5555CC", thickness: 0.04 },
+  { id: 2, name: "Fox", color: "#44DD44", thickness: 0.05 },
+];
 
 export function TeethModel3D(props: TeethModel3DProps) {
   const { onToothClick, elastics = [] } = props;
@@ -73,6 +131,45 @@ export function TeethModel3D(props: TeethModel3DProps) {
     event.stopPropagation();
     return onToothClick(toothNumber, event);
   };
+
+  // Generate elastic line data
+  const elasticLines = useMemo(() => {
+    return elastics
+      .map((elastic) => {
+        // Skip if not enough points
+        if (elastic.teeth.length < 2) return null;
+
+        // Get positions for each tooth in this elastic
+        const points = elastic.teeth
+          .map((point) => {
+            const basePosition = toothPositions[point.tooth];
+            if (!basePosition) return null;
+
+            // Apply offset based on inside/outside
+            const offset = sideOffset[point.outside];
+            return [
+              basePosition[0] + (offset?.[0] || 0),
+              basePosition[1] + (offset?.[1] || 0),
+              basePosition[2] + (offset?.[2] || 0),
+            ] as [number, number, number];
+          })
+          .filter((pos) => pos !== null) as [number, number, number][];
+
+        if (points.length < 2) return null;
+
+        // Get the elastic type configuration
+        const elasticTypeConfig =
+          ELASTIC_TYPES.find((et) => et.id === elastic.type) ||
+          ELASTIC_TYPES[0];
+
+        return {
+          points,
+          color: elasticTypeConfig.color,
+          thickness: elasticTypeConfig.thickness,
+        };
+      })
+      .filter((line) => line !== null);
+  }, [elastics]);
 
   return (
     <group {...props} dispose={null}>
@@ -323,21 +420,21 @@ export function TeethModel3D(props: TeethModel3DProps) {
             27
           </Text>
 
-          <mesh raycast={raycast}>
-            <meshLineGeometry
-              points={[
-                [-0.2, -1.2, 1],
-                [-0.3, -1.4, 0.8],
-              ]}
-            />
-            {/* If you're rendering transparent lines or using a texture with alpha map, you should set depthTest to false, transparent to true and blending to an appropriate blending mode, or use alphaTest. */}
-            <meshLineMaterial
-              lineWidth={0.05}
-              color="#dd0000"
-              transparent
-              depthTest={false}
-            />
-          </mesh>
+          {/* Render elastic lines based on the elastics prop */}
+          {elasticLines.map(
+            (elastic, idx) =>
+              elastic && (
+                <mesh key={`elastic-${idx}`} raycast={raycast}>
+                  <meshLineGeometry points={elastic.points} />
+                  <meshLineMaterial
+                    lineWidth={elastic.thickness}
+                    color={elastic.color}
+                    transparent
+                    depthTest={false}
+                  />
+                </mesh>
+              )
+          )}
 
           <OrbitControls />
         </group>
