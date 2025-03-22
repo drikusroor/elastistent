@@ -13,7 +13,7 @@ export function TeethModel3DViewer(props: TeethModel3DViewerProps) {
         <ambientLight intensity={1.2} />
         <pointLight position={[2.5, 0, 1]} intensity={15} />
         <pointLight position={[-2.5, 0, 1]} intensity={15} />
-        <TeethModel3D {...args} />
+        <TeethModel3D {...args} onToothClick={onToothClick} />
       </Canvas>
     </div>
   );
