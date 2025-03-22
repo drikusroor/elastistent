@@ -345,6 +345,61 @@ export function TeethModel3D(props: TeethModel3DProps) {
           <Text
             fontSize={0.25}
             scale={[0.25, 0.25, 1]}
+            position={[-0.3, -1.23, 0.85]}
+            rotation={[0, -0.9, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            13
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[-0.38, -1.24, 0.73]}
+            rotation={[0, -1.1, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            14
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[-0.41, -1.25, 0.6]}
+            rotation={[0, -1.4, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            15
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[-0.43, -1.26, 0.43]}
+            rotation={[0, -1.35, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            16
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[-0.45, -1.26, 0.29]}
+            rotation={[0, -1.4, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            17
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
             position={[0.075, -1.23, 1.03]}
             rotation={[0, 0.2, 0]}
             color="#333333"
@@ -418,6 +473,160 @@ export function TeethModel3D(props: TeethModel3DProps) {
             anchorY="middle"
           >
             27
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.075, -1.44, 0.99]}
+            rotation={[0, 0.2, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            31
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.19, -1.44, 0.9]}
+            rotation={[0, 0.65, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            32
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.27, -1.44, 0.81]}
+            rotation={[0, 0.9, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            33
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.34, -1.44, 0.72]}
+            rotation={[0, 1.1, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            34
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.36, -1.43, 0.58]}
+            rotation={[0, 1.4, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            35
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.405, -1.42, 0.43]}
+            rotation={[0, 1.35, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            36
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[0.43, -1.4, 0.29]}
+            rotation={[0, 1.4, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            37
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[-0.075, -1.44, 0.99]}
+            rotation={[0, -0.2, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            41
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[-0.21, -1.44, 0.9]}
+            rotation={[0, -0.65, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            42
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[-0.28, -1.44, 0.83]}
+            rotation={[0, -0.9, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            43
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[-0.35, -1.44, 0.71]}
+            rotation={[0, -1.1, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            44
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[-0.38, -1.43, 0.58]}
+            rotation={[0, -1.4, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            45
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[-0.4, -1.42, 0.43]}
+            rotation={[0, -1.35, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            46
+          </Text>
+          <Text
+            fontSize={0.25}
+            scale={[0.25, 0.25, 1]}
+            position={[-0.44, -1.4, 0.27]}
+            rotation={[0, -1.4, 0]}
+            color="#333333"
+            anchorX="center"
+            anchorY="middle"
+          >
+            47
           </Text>
 
           {/* Render elastic lines based on the elastics prop */}
