@@ -10,6 +10,7 @@ import { GLTF } from "three-stdlib";
 import { extend, ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
 import { MeshLineGeometry, MeshLineMaterial, raycast } from "meshline";
+import { ElasticPoint } from "../../types";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -54,6 +55,7 @@ type GLTFResult = GLTF & {
 
 type TeethModel3DProps = JSX.IntrinsicElements["group"] & {
   onToothClick?: (toothNumber: number, event: ThreeEvent<MouseEvent>) => void;
+  currentElastic: ElasticPoint[];
 };
 
 export function TeethModel3D(props: TeethModel3DProps) {
@@ -329,7 +331,12 @@ export function TeethModel3D(props: TeethModel3DProps) {
               ]}
             />
             {/* If you're rendering transparent lines or using a texture with alpha map, you should set depthTest to false, transparent to true and blending to an appropriate blending mode, or use alphaTest. */}
-            <meshLineMaterial lineWidth={0.05} color="#dd0000" transparent depthTest={false} />
+            <meshLineMaterial
+              lineWidth={0.05}
+              color="#dd0000"
+              transparent
+              depthTest={false}
+            />
           </mesh>
 
           <OrbitControls />
