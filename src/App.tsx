@@ -446,7 +446,7 @@ const ElasticPlacer = () => {
           isMirrorView={isMirrorView}
         />
 
-        <TeethModel3DViewer />
+        <TeethModel3DViewer elastics={elastics}  />
       </div>
 
       <div className="mx-auto mt-4 flex flex-col sm:flex-row justify-center md:justify-between items-center sm:items-start gap-4 md:min-w-72 md:p-8">

@@ -10,7 +10,7 @@ import { GLTF } from "three-stdlib";
 import { extend, ThreeEvent } from "@react-three/fiber";
 import { OrbitControls, Text } from "@react-three/drei";
 import { MeshLineGeometry, MeshLineMaterial, raycast } from "meshline";
-import { ElasticPoint } from "../../types";
+import { Elastic, ElasticPoint } from "../../types";
 
 extend({ MeshLineGeometry, MeshLineMaterial });
 
@@ -53,13 +53,13 @@ type GLTFResult = GLTF & {
   animations: GLTFAction[];
 };
 
-type TeethModel3DProps = JSX.IntrinsicElements["group"] & {
-  onToothClick?: (toothNumber: number, event: ThreeEvent<MouseEvent>) => void;
-  currentElastic: ElasticPoint[];
-};
+interface TeethModel3DProps {
+  onToothClick?: (toothNumber: number, event?: ThreeEvent<MouseEvent>) => void;
+  elastics: Elastic[];
+}
 
 export function TeethModel3D(props: TeethModel3DProps) {
-  const { onToothClick } = props;
+  const { onToothClick, elastics = [] } = props;
   const { nodes, materials } = useGLTF(
     "assets/models/human_teeth.glb"
   ) as unknown as GLTFResult;

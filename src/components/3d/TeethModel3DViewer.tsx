@@ -1,11 +1,11 @@
 import { Canvas, ThreeEvent } from "@react-three/fiber";
 import { TeethModel3D } from "./TeethModel3D";
-import { ElasticPoint } from "../../types";
+import { Elastic } from "../../types";
 
-type TeethModel3DViewerProps = JSX.IntrinsicElements["group"] & {
+interface TeethModel3DViewerProps {
   onToothClick?: (toothNumber: number, event?: ThreeEvent<MouseEvent>) => void;
-  currentElastic: ElasticPoint[];
-};
+  elastics: Elastic[];
+}
 
 export function TeethModel3DViewer(props: TeethModel3DViewerProps) {
   return (
