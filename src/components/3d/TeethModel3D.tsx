@@ -59,7 +59,7 @@ type TeethModel3DProps = JSX.IntrinsicElements["group"] & {
 export function TeethModel3D(props: TeethModel3DProps) {
   const { onToothClick } = props;
   const { nodes, materials } = useGLTF(
-    "/assets/models/human_teeth.glb"
+    "assets/models/human_teeth.glb"
   ) as unknown as GLTFResult;
 
   const handleToothClick = (
@@ -339,4 +339,4 @@ export function TeethModel3D(props: TeethModel3DProps) {
   );
 }
 
-useGLTF.preload("/assets/models/human_teeth.glb");
+useGLTF.preload("assets/models/human_teeth.glb");

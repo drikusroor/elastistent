@@ -8,6 +8,7 @@ import LanguageButtons from "./components/LanguageButtons";
 import Logo from "./components/Logo";
 import { TeethGrid } from "./components/TeethGrid";
 import { Elastic, ElasticPoint, TimeType } from "./types";
+import TeethModel3DViewer from "./components/3d/TeethModel3DViewer";
 
 const teethLayout = {
   topLeft: [18, 17, 16, 15, 14, 13, 12, 11],
@@ -444,6 +445,8 @@ const ElasticPlacer = () => {
           setToothRef={setToothRef}
           isMirrorView={isMirrorView}
         />
+
+        <TeethModel3DViewer />
       </div>
 
       <div className="mx-auto mt-4 flex flex-col sm:flex-row justify-center md:justify-between items-center sm:items-start gap-4 md:min-w-72 md:p-8">

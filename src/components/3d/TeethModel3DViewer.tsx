@@ -8,12 +8,14 @@ type TeethModel3DViewerProps = JSX.IntrinsicElements["group"] & {
 export function TeethModel3DViewer(props: TeethModel3DViewerProps) {
   const { onToothClick, ...args } = props;
   return (
-    <Canvas camera={{ position: [0, 0, 5], fov: 50, zoom: 5 }}>
-      <ambientLight intensity={1} />
-      <pointLight position={[2.5, 0, 0]} intensity={10} />
-      <pointLight position={[-2.5, 0, 0]} intensity={10} />
-      <TeethModel3D {...args} onToothClick={onToothClick} />
-    </Canvas>
+    <div className="w-full aspect-square">
+      <Canvas camera={{ position: [0, 0, 5], fov: 50, zoom: 4.5 }}>
+        <ambientLight intensity={1.2} />
+        <pointLight position={[2.5, 0, 1]} intensity={15} />
+        <pointLight position={[-2.5, 0, 1]} intensity={15} />
+        <TeethModel3D {...args} />
+      </Canvas>
+    </div>
   );
 }
 
