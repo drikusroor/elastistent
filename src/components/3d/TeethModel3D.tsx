@@ -436,7 +436,7 @@ export function TeethModel3D(props: TeethModel3DProps) {
               )
           )}
 
-          <OrbitControls />
+          <OrbitControls enableZoom={false} />
         </group>
       </group>
     </group>
